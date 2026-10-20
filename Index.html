@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080e18">
+  <meta name="description" content="Explore MaBit and KáraKÖG through an interactive neural network.">
+  <title>MaBit — Neural Navigation Prototype</title>
+  <style>
+    /* STEP 1: Shared design values. Change these to restyle the entire interface. */
+    :root {
+      color-scheme: dark;
+      --bg: #080e18;
+      --surface: #111d2c;
+      --edge: #35506b;
+      --text: #eaf7ff;
+      --muted: #a9becf;
+      --accent: #78deef;
+      --accent-soft: rgba(120, 222, 239, .12);
+      --max-width: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 300px;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      color: var(--text);
+      background: radial-gradient(ellipse at 65% 12%, #172c40 0, transparent 54%), var(--bg);
+      line-height: 1.55;
+    }
+    a { color: var(--accent); }
+    :focus-visible { outline: 3px solid #fff1ac; outline-offset: 5px; }
+    .shell { width: min(calc(100% - 32px), var(--max-width)); margin-inline: auto; }
+    .site-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; flex-wrap: wrap; padding-block: 18px;
+      border-bottom: 1px solid rgba(150, 211, 238, .15);
+    }
+    .wordmark { font-size: 1.4rem; font-weight: 800; letter-spacing: -.04em; text-decoration: none; color: var(--text); }
+    .wordmark span { color: var(--accent); }
+    .site-header nav { display: flex; flex-wrap: wrap; gap: 18px; }
+    .site-header nav a { text-decoration: none; color: var(--muted); font-size: .9rem; }
+    .site-header nav a:hover { color: var(--accent); }
+    .hero { padding: clamp(26px, 5vw, 55px) 0 19px; }
+    .eyebrow { margin: 0 0 8px; color: var(--accent); font-size: .76rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; }
+    h1 { margin: 0 0 10px; font-size: clamp(2rem, 5.3vw, 4.3rem); line-height: 1.1; letter-spacing: -.055em; }
+    .intro { max-width: 68ch; margin: 0; color: var(--muted); font-size: clamp(.96rem, 2vw, 1.1rem); }
+    .gesture-guide { display: flex; flex-wrap: wrap; gap: 9px; margin: 18px 0 0; }
+    .pill { border: 1px solid #34516a; border-radius: 100px; padding: 5px 11px; color: #bdd7e4; font-size: .79rem; background: #142332; }
+    .pill strong { color: #ecfaff; }
+
+    /* STEP 2: Neural canvas. SVG links sit behind real HTML buttons. */
+    .network {
+      position: relative;
+      isolation: isolate;
+      aspect-ratio: 1000 / 560;
+      margin-block: 20px;
+      overflow: hidden;
+      border: 1px solid #355773;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 20% 48%, rgba(70, 173, 201, .19), transparent 28%),
+        radial-gradient(circle at 77% 26%, rgba(93, 139, 217, .10), transparent 37%),
+        linear-gradient(145deg, #0c1b2b, #0a1220);
+      box-shadow: inset 0 0 90px rgba(41, 117, 164, .08), 0 15px 55px rgba(0,0,0,.22);
+    }
+    .network::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background-image: linear-gradient(rgba(135,213,242,.035) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(135,213,242,.035) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+    .network::after {
+      content: "NEURAL EXPLORER  /  PROTOTYPE 001";
+      position: absolute; left: 20px; bottom: 14px; pointer-events: none;
+      font: 600 .65rem/1.3 ui-monospace, monospace; letter-spacing: .13em; color: #8aa4b5;
+    }
+    .link-map { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+    .link-map .dormant { fill: none; stroke: #8cbbd2; stroke-opacity: .18; stroke-width: 2; stroke-dasharray: 5 10; }
+    .link-map .live { fill: none; stroke: url(#neuralGradient); stroke-width: 4; stroke-linecap: round; filter: url(#softGlow); }
+    #signal { fill: #e5ffff; filter: url(#softGlow); visibility: hidden; }
+    .neuron {
+      position: absolute; z-index: 2; left: var(--x); top: var(--y);
+      transform: translate(-50%, -50%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      width: clamp(76px, 12vw, 124px); height: clamp(76px, 12vw, 124px);
+      border: 2px solid #517e9c; border-radius: 50%;
+      padding: 7px; color: var(--text); text-align: center;
+      background: radial-gradient(circle at 45% 37%, #244760, #102437 70%);
+      box-shadow: 0 0 0 8px rgba(98, 174, 204, .05), 0 0 25px rgba(46, 145, 194, .12);
+    }
+    .neuron__title { font-size: clamp(.8rem, 1.7vw, 1.12rem); font-weight: 800; line-height: 1.1; }
+    .neuron__sub { margin-top: 5px; font-size: clamp(.55rem, 1.13vw, .7rem); line-height: 1.2; color: #bdd3e5; }
+    .neuron--home { --x: 20%; --y: 51%; width: clamp(95px, 14vw, 145px); height: clamp(95px, 14vw, 145px); border-color: var(--accent); background: radial-gradient(circle, #286277, #0b2537 70%); box-shadow: 0 0 35px rgba(72, 201, 231, .25), 0 0 0 10px rgba(96, 222, 238, .06); }
+    .neuron--home .neuron__title { font-size: clamp(1.05rem, 2.3vw, 1.6rem); }
+    .neuron--target { cursor: pointer; font: inherit; -webkit-tap-highlight-color: transparent; touch-action: none; user-select: none; }
+    .neuron--target:hover, .neuron--target:focus-visible { border-color: #d0faff; box-shadow: 0 0 0 9px rgba(98, 174, 204, .09), 0 0 32px rgba(83, 210, 231, .4); }
+    .neuron--target[aria-pressed="true"] { border-color: #d6faff; background: radial-gradient(circle at 50% 30%, #286a78, #123145 75%); box-shadow: 0 0 34px rgba(102, 234, 244, .5), 0 0 0 9px rgba(98, 174, 204, .08); }
+    .neuron--kara { --x: 65%; --y: 16%; }
+    .neuron--kog { --x: 83%; --y: 38%; }
+    .neuron--machine { --x: 81%; --y: 68%; }
+    .neuron--hab { --x: 55%; --y: 85%; }
+    .neuron--target.is-charging { border-color: #eaffff; }
+    .neuron--target.just-connected { animation: pop-in .38s ease-out; }
+    @keyframes pop-in { 0% { scale: 1; } 40% { scale: 1.13; } 100% { scale: 1; } }
+
+    /* STEP 3: Discovery panel and supporting readable content. */
+    .readout {
+      display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 22px;
+      border: 1px solid #355773; border-radius: 17px;
+      padding: clamp(16px, 3vw, 26px); background: #101e2e;
+    }
+    .readout__eyebrow { margin: 0 0 4px; color: var(--accent); font: 700 .76rem ui-monospace, monospace; text-transform: uppercase; letter-spacing: .13em; }
+    .readout h2 { margin: 0 0 7px; font-size: 1.55rem; line-height: 1.25; }
+    .readout p:last-child { margin-bottom: 0; }
+    #detail-description { color: var(--muted); margin: 0; max-width: 70ch; }
+    .readout__side { display: grid; gap: 8px; justify-items: end; }
+    .readout__link { display: inline-block; padding: 10px 14px; text-decoration: none; border: 1px solid var(--accent); border-radius: 9px; font-weight: 750; white-space: nowrap; }
+    .readout__link[hidden] { display: none; }
+    #status { margin: 0; color: #b2d9e7; font-size: .78rem; max-width: 28ch; text-align: right; }
+    .notes { padding: 55px 0 70px; }
+    .notes h2 { margin: 0; font-size: 1.6rem; }
+    .notes > p { color: var(--muted); max-width: 66ch; }
+    .notes-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; margin-top: 20px; }
+    .note { scroll-margin-top: 20px; border: 1px solid rgba(103, 169, 198, .35); border-radius: 14px; padding: 19px; background: rgba(15, 33, 49, .9); }
+    .note:target { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .note h3 { margin: 0 0 7px; font-size: 1.2rem; }
+    .note p { margin: 0; color: var(--muted); }
+    footer { padding: 20px 0 30px; border-top: 1px solid rgba(150,211,238,.15); color: var(--muted); font-size: .85rem; }
+    @media (max-width: 650px) {
+      .site-header { align-items: flex-start; }
+      .network { aspect-ratio: 4 / 5; border-radius: 15px; }
+      .neuron { width: 82px; height: 82px; }
+      .neuron--home { width: 95px; height: 95px; }
+      .neuron__title { font-size: .82rem; }
+      .neuron__sub { font-size: .57rem; }
+      .neuron--home .neuron__title { font-size: 1.08rem; }
+      .neuron--kara { --x: 65%; --y: 15%; }
+      .neuron--hab { --x: 55%; --y: 85%; }
+      .readout { grid-template-columns: 1fr; }
+      .readout__side { justify-items: start; }
+      #status { max-width: none; text-align: left; }
+      .notes-grid { grid-template-columns: 1fr; }
+      .network::after { font-size: .5rem; left: 9px; bottom: 8px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .neuron--target.just-connected { animation: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header shell">
+    <a class="wordmark" href="#top">MaBit<span>.world</span></a>
+    <nav aria-label="Main navigation">
+      <a href="#explorer">Explorer</a>
+      <a href="#project-notes">Projects</a>
+      <a href="#about">About</a>
+    </nav>
+  </header>
+
+  <main id="top" class="shell">
+    <section class="hero" id="about" aria-labelledby="page-title">
+      <p class="eyebrow">KáraKÖG / a space for connecting ideas</p>
+      <h1 id="page-title">Every connection begins somewhere.</h1>
+      <p class="intro">Welcome to MaBit. Explore community cooperation, practical technology and the projects taking shape around them. Start with a connection.</p>
+      <div class="gesture-guide" aria-label="How to use the explorer">
+        <span class="pill"><strong>Quick click / tap:</strong> snap</span>
+        <span class="pill"><strong>Click / press and hold:</strong> grow</span>
+        <span class="pill"><strong>Keyboard:</strong> Enter or Space</span>
+      </div>
+    </section>
+
+    <section class="network" id="explorer" aria-label="Explore MaBit's connected projects">
+      <!-- The faint paths are always visible. JavaScript reveals the bright path as it grows. -->
+      <svg class="link-map" viewBox="0 0 1000 560" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="neuralGradient" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#2ab5d4" />
+            <stop offset=".6" stop-color="#70dfee" />
+            <stop offset="1" stop-color="#e8ffff" />
+          </linearGradient>
+          <filter id="softGlow" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <g class="dormant">
+          <path d="M 200 286 Q 350 85 650 90" />
+          <path d="M 200 286 Q 470 205 830 213" />
+          <path d="M 200 286 Q 510 340 810 381" />
+          <path d="M 200 286 Q 290 470 550 476" />
+        </g>
+        <g>
+          <path class="live" id="path-kara" d="M 200 286 Q 350 85 650 90" />
+          <path class="live" id="path-kog" d="M 200 286 Q 470 205 830 213" />
+          <path class="live" id="path-machine" d="M 200 286 Q 510 340 810 381" />
+          <path class="live" id="path-hab" d="M 200 286 Q 290 470 550 476" />
+        </g>
+        <circle id="signal" r="7" cx="200" cy="286" />
+      </svg>
+
+      <div class="neuron neuron--home" aria-label="MaBit, starting point">
+        <span class="neuron__title">MaBit</span>
+        <span class="neuron__sub">Start here</span>
+      </div>
+      <button type="button" class="neuron neuron--target neuron--kara" data-node="kara" aria-pressed="false" aria-label="Connect to Kára, community interest">
+        <span class="neuron__title">Kára</span><span class="neuron__sub">Community</span>
+      </button>
+      <button type="button" class="neuron neuron--target neuron--kog" data-node="kog" aria-pressed="false" aria-label="Connect to KÖG, services">
+        <span class="neuron__title">KÖG</span><span class="neuron__sub">Services</span>
+      </button>
+      <button type="button" class="neuron neuron--target neuron--machine" data-node="machine" aria-pressed="false" aria-label="Connect to KÖG Machine, hardware project">
+        <span class="neuron__title">KÖG Machine</span><span class="neuron__sub">Hardware</span>
+      </button>
+      <button type="button" class="neuron neuron--target neuron--hab" data-node="hab" aria-pressed="false" aria-label="Connect to HAB-001, habitat project">
+        <span class="neuron__title">HAB-001</span><span class="neuron__sub">Habitats</span>
+      </button>
+    </section>
+
+    <section class="readout" aria-label="Selected connection">
+      <div>
+        <p class="readout__eyebrow">Neural connection / discovery</p>
+        <h2 id="detail-title">Choose a destination</h2>
+        <p id="detail-description">Tap a neuron for a quick snap, or press and hold it to grow a connection. Let go early during a hold and the connection fades.</p>
+      </div>
+      <div class="readout__side">
+        <a id="detail-link" class="readout__link" href="#project-notes" hidden>Read project notes ↗</a>
+        <p id="status" role="status" aria-live="polite">Awaiting connection</p>
+      </div>
+    </section>
+
+    <section id="project-notes" class="notes" aria-labelledby="notes-title">
+      <h2 id="notes-title">Explore the projects</h2>
+      <p>The neural interface is another way into ordinary web content. Each destination still has a normal anchor link, so the site remains simple to navigate.</p>
+      <div class="notes-grid">
+        <article class="note" id="kara"><h3>Kára — Community</h3><p>Sharing skills, knowledge and resources; finding ways for community cooperation to make practical improvements.</p></article>
+        <article class="note" id="kog"><h3>KÖG — Services</h3><p>The business and client-services side of KáraKÖG, including remote IT support and technology services.</p></article>
+        <article class="note" id="machine"><h3>KÖG Machine — Hardware</h3><p>Exploring personal servers, local digital infrastructure and tools that give people more control over their computing.</p></article>
+        <article class="note" id="hab"><h3>HAB-001 — Habitats</h3><p>Exploring adaptable units for IT labs, motorcycle work, woodworking, and other practical community services.</p></article>
+      </div>
+    </section>
+  </main>
+  <footer class="shell">MaBit / KáraKÖG — interactive concept prototype. Built with HTML, CSS and vanilla JavaScript; no downloads or libraries required.</footer>
+
+  <script>
+    // STEP 4: Project data. Add new destinations here as your website grows.
+    const destinations = {
+      kara: { title: 'Kára — Community', description: 'The community-facing side of KáraKÖG: cooperation, shared resources, learning and meaningful local connections.', href: '#kara' },
+      kog: { title: 'KÖG — Services', description: 'The client and business side: practical IT support, services and sustainable development work.', href: '#kog' },
+      machine: { title: 'KÖG Machine — Hardware', description: 'Personal servers, local computing and tools that give people more control of their digital spaces.', href: '#machine' },
+      hab: { title: 'HAB-001 — Habitats', description: 'Modular prototypes for IT labs, workshops, practical skills and community services.', href: '#hab' }
+    };
+
+    // STEP 5: Connect JavaScript to the existing HTML and SVG.
+    const buttons = [...document.querySelectorAll('[data-node]')];
+    const paths = Object.fromEntries(Object.keys(destinations).map(key => [key, document.getElementById('path-' + key)]));
+    const lengths = Object.fromEntries(Object.keys(paths).map(key => [key, paths[key].getTotalLength()]));
+    const signal = document.getElementById('signal');
+    const title = document.getElementById('detail-title');
+    const description = document.getElementById('detail-description');
+    const link = document.getElementById('detail-link');
+    const status = document.getElementById('status');
+
+    // Durations are milliseconds. Try changing just these three numbers!
+    const TAP_LIMIT = 230;         // Under this: quick snap.
+    const HOLD_DURATION = 1500;     // After TAP_LIMIT: gradually grow.
+    const SNAP_DURATION = 250;      // Fast click animation.
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    let press = null;              // Which neuron is being held, if any.
+    let frameId = 0;               // Used to cancel an in-progress animation.
+    let progress = 0;              // How far the currently drawn path has grown.
+
+    // SVG 'stroke-dashoffset' is the trick: it gradually uncovers a line.
+    function setPathProgress(key, amount) {
+      const clamped = Math.max(0, Math.min(1, amount));
+      const path = paths[key];
+      progress = clamped;
+      path.style.strokeDashoffset = lengths[key] * (1 - clamped);
+      if (clamped > 0 && clamped < 1) {
+        const point = path.getPointAtLength(lengths[key] * clamped);
+        signal.setAttribute('cx', point.x);
+        signal.setAttribute('cy', point.y);
+        signal.style.visibility = 'visible';
+      } else {
+        signal.style.visibility = 'hidden';
+      }
+    }
+
+    // Give every path the correct initial dash length so it starts invisible.
+    Object.keys(paths).forEach(key => {
+      paths[key].style.strokeDasharray = lengths[key];
+      paths[key].style.strokeDashoffset = lengths[key];
+    });
+
+    function clearConnections() {
+      Object.keys(paths).forEach(key => {
+        paths[key].style.strokeDashoffset = lengths[key];
+      });
+      buttons.forEach(button => {
+        button.setAttribute('aria-pressed', 'false');
+        button.classList.remove('is-charging', 'just-connected');
+      });
+      signal.style.visibility = 'hidden';
+      progress = 0;
+    }
+
+    function cancelRunningFrame() {
+      if (frameId) cancelAnimationFrame(frameId);
+      frameId = 0;
+    }
+
+    function connected(key, method) {
+      setPathProgress(key, 1);
+      const data = destinations[key];
+      title.textContent = data.title;
+      description.textContent = data.description;
+      link.href = data.href;
+      link.hidden = false;
+      buttons.forEach(button => {
+        const selected = button.dataset.node === key;
+        button.setAttribute('aria-pressed', String(selected));
+        button.classList.remove('is-charging');
+        if (selected && !reducedMotion.matches) {
+          button.classList.remove('just-connected');
+          void button.offsetWidth; // Restart the brief completion pulse.
+          button.classList.add('just-connected');
+        }
+      });
+      status.textContent = method === 'hold' ? 'Connection grown. Release to explore another.' : 'Connection snapped into place.';
+    }
+
+    // Shared helper: animate the line between two fractions.
+    function animateLine(key, from, to, milliseconds, onDone) {
+      cancelRunningFrame();
+      if (reducedMotion.matches || milliseconds <= 0) {
+        setPathProgress(key, to);
+        onDone?.();
+        return;
+      }
+      const start = performance.now();
+      function step(now) {
+        const t = Math.min(1, (now - start) / milliseconds);
+        const eased = 1 - Math.pow(1 - t, 3); // Ease-out: fast first, slow at the end.
+        setPathProgress(key, from + (to - from) * eased);
+        if (t < 1) frameId = requestAnimationFrame(step);
+        else { frameId = 0; onDone?.(); }
+      }
+      frameId = requestAnimationFrame(step);
+    }
+
+    function snapTo(key) {
+      press = null;
+      cancelRunningFrame();
+      clearConnections();
+      status.textContent = 'Snapping connection…';
+      animateLine(key, 0, 1, SNAP_DURATION, () => connected(key, 'tap'));
+    }
+
+    // Pointer-down (or key-down) starts a potential long hold.
+    function startHold(key, source) {
+      cancelRunningFrame();
+      press = { key, source, startedAt: performance.now(), completed: false };
+      clearConnections();
+      status.textContent = 'Holding… keep pressing to grow the connection.';
+      buttons.find(button => button.dataset.node === key).classList.add('is-charging');
+      frameId = requestAnimationFrame(growWhileHeld);
+    }
+
+    function growWhileHeld(now) {
+      frameId = 0;
+      if (!press || press.completed) return;
+      const elapsed = now - press.startedAt;
+      if (elapsed > TAP_LIMIT) {
+        const fraction = Math.min(1, (elapsed - TAP_LIMIT) / HOLD_DURATION);
+        setPathProgress(press.key, fraction);
+        if (fraction >= 1) {
+          press.completed = true;
+          connected(press.key, 'hold');
+          return;
+        }
+      }
+      frameId = requestAnimationFrame(growWhileHeld);
+    }
+
+    // Releasing before the threshold means SNAP.
+    // Releasing an incomplete long hold means FADE BACK.
+    function finishHold(source) {
+      if (!press || press.source !== source) return;
+      const { key, startedAt, completed } = press;
+      press = null;
+      cancelRunningFrame();
+      buttons.find(button => button.dataset.node === key).classList.remove('is-charging');
+      if (completed) return;
+      if (performance.now() - startedAt <= TAP_LIMIT) {
+        snapTo(key);
+      } else {
+        const fraction = progress;
+        status.textContent = 'Connection released early. Try a longer hold, or tap to snap.';
+        animateLine(key, fraction, 0, 210);
+      }
+    }
+
+    function cancelHold(source) {
+      if (!press || press.source !== source) return;
+      press = null;
+      cancelRunningFrame();
+      clearConnections();
+      status.textContent = 'Connection interrupted. Try again.';
+    }
+
+    // Pointer events work across mouse, touch, and stylus input.
+    buttons.forEach(button => {
+      const key = button.dataset.node;
+      button.addEventListener('pointerdown', event => {
+        if (event.pointerType === 'mouse' && event.button !== 0) return;
+        if (press) return;
+        button.setPointerCapture(event.pointerId);
+        startHold(key, `pointer-${event.pointerId}`);
+      });
+      button.addEventListener('pointerup', event => finishHold(`pointer-${event.pointerId}`));
+      button.addEventListener('pointercancel', event => cancelHold(`pointer-${event.pointerId}`));
+
+      // Holding Enter/Space works like holding the mouse. Screen-reader
+      // synthesized clicks (detail === 0) still work as an instant snap.
+      button.addEventListener('keydown', event => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        if (!event.repeat && !press) startHold(key, `key-${event.key}`);
+      });
+      button.addEventListener('keyup', event => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        finishHold(`key-${event.key}`);
+      });
+      button.addEventListener('blur', () => {
+        if (press && press.source.startsWith('key-')) cancelHold(press.source);
+      });
+      button.addEventListener('click', event => {
+        if (event.detail === 0 && !press) snapTo(key);
+      });
+    });
+  </script>
+</body>
+</html>
