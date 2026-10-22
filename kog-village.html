@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a2021">
+<meta name="description" content="KÖG Village: a playable stewardship simulator from KáraKÖG. Build modular habitats, share resources, and discover what a resilient community needs.">
+<title>KÖG Village | The Stewardship Simulation</title>
+<style>
+:root{--bg:#061819;--panel:#0d292a;--panel2:#123333;--line:#28504b;--text:#eef4e5;--muted:#9cb9aa;--mint:#7ee3bc;--mint-dark:#214b40;--gold:#edc785;--red:#f1a09a;--forest:#2b6544;--shadow:0 14px 45px #0005}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}body{margin:0;min-width:320px;color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(circle at 60% 0%,#1d4640 0,transparent 36%),linear-gradient(150deg,#071b1d,#091b1e 70%,#091716);line-height:1.48}
+button{font:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+a{color:var(--mint)}.eyebrow{text-transform:uppercase;letter-spacing:.18em;font-weight:800;font-size:.69rem;color:var(--mint)}
+.shell{width:min(1560px,100%);margin:auto;padding:20px clamp(12px,2vw,32px) 36px}
+.topbar{display:flex;gap:16px;justify-content:space-between;align-items:center;padding:4px 0 19px;border-bottom:1px solid #ffffff25}.brand{display:flex;align-items:center;gap:12px}.mark{width:49px;height:49px;display:grid;place-items:center;border:1.5px solid var(--mint);border-radius:16px;background:linear-gradient(140deg,#245d4b,#0a2827);color:#e9f8df;font-size:1.2rem;font-weight:900;letter-spacing:-.11em;box-shadow:0 0 26px #38b88122}.brand b{display:block;letter-spacing:.15em;font-size:.94rem}.brand small{display:block;color:var(--muted);font-size:.7rem;letter-spacing:.06em}.toplinks{display:flex;align-items:center;gap:10px}.toplinks a{text-decoration:none;color:var(--muted);font-size:.81rem}.chip{border:1px solid #58897988;border-radius:100px;color:var(--mint);padding:6px 11px;font-size:.7rem;white-space:nowrap}
+.hero{display:grid;grid-template-columns:1fr auto;align-items:end;gap:24px;padding:23px 0 20px}.hero h1{font-size:clamp(2rem,3.4vw,3.7rem);line-height:1.04;letter-spacing:-.055em;margin:8px 0 9px;font-weight:760}.hero h1 em{color:var(--mint);font-style:normal}.hero p{max-width:750px;color:#b9d0c1;font-size:.94rem;margin:0}.guide{max-width:275px;color:var(--muted);font-size:.78rem;border-left:2px solid var(--gold);padding-left:14px}.guide strong{display:block;color:var(--gold);margin-bottom:4px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:15px}.stat{border:1px solid var(--line);border-radius:15px;padding:12px 15px;background:#12332fa8;box-shadow:inset 0 1px #fff1;min-height:99px}.stat>span{font-size:.75rem;color:#b8cbbe;display:block}.stat b{font-size:1.8rem;letter-spacing:-.05em;display:inline-block;font-variant-numeric:tabular-nums}.stat small{color:#9fbfaf;font-size:.7rem;margin-left:8px}.stat .sub{display:block;font-size:.72rem;color:var(--muted)}
+.layout{display:grid;grid-template-columns:269px minmax(0,1fr) 300px;gap:13px;align-items:start}.panel,.map-pane{background:linear-gradient(175deg,#0e2a2b,#0a2225);border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow);overflow:hidden}.panel-pad{padding:17px}.section-top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.section-top h2{font-size:1rem;margin:0}.section-top span{font-size:.72rem;color:var(--muted)}.subtitle{font-size:.75rem;color:var(--muted);margin:7px 0 15px}.build-list{display:grid;gap:7px;max-height:550px;overflow-y:auto;scrollbar-color:#376c60 transparent;padding:1px 3px 5px 0}.build-btn{display:grid;grid-template-columns:37px minmax(0,1fr);gap:9px;text-align:left;align-items:center;border:1px solid #285047;border-radius:11px;background:#163837a8;color:var(--text);padding:9px 10px;min-height:70px;transition:background .18s,border .18s,transform .18s}.build-btn:hover{background:#215146;transform:translateY(-1px)}.build-btn.active{background:#1c5a46;border-color:var(--mint);box-shadow:0 0 0 1px #7ee3bc30}.build-btn .emoji{font-size:1.62rem;text-align:center}.build-btn strong,.build-btn small,.build-btn .cost{display:block}.build-btn strong{font-size:.83rem}.build-btn small{color:#b7cbbc;font-size:.69rem;margin:1px 0}.build-btn .cost{color:var(--gold);font-size:.67rem;font-weight:700}.divider{height:1px;background:var(--line);margin:16px 0}.policy-tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px}.policy-tabs button{border:1px solid #366356;border-radius:10px;background:#153535;color:var(--muted);font-size:.76rem;padding:10px 5px}.policy-tabs button.selected{background:#2e6652;color:#fff;border-color:var(--mint)}.policy-text{margin:10px 0 0;color:var(--muted);font-size:.73rem;min-height:55px}
+.map-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 17px 12px;border-bottom:1px solid #315549}.map-head strong{font-size:.96rem}.map-head small{color:var(--muted);display:block;font-size:.7rem}.week{background:#224a41;border:1px solid #386b5b;padding:7px 10px;border-radius:100px;color:#dcf9e6;font-size:.73rem;white-space:nowrap}.map-frame{position:relative;overflow-x:auto;background:radial-gradient(circle at 55% 40%,#396d4b6d 0,transparent 60%),linear-gradient(145deg,#183e35,#16342f);padding:24px 17px 28px;scrollbar-color:#386857 #14322c}.map-frame:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.11;background-image:linear-gradient(50deg,transparent 48%,#bdd7a5 49%,transparent 50%),linear-gradient(-42deg,transparent 48%,#a3c4a7 49%,transparent 50%);background-size:120px 95px}.map-grid{position:relative;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;min-width:560px;max-width:760px;margin:auto;isolation:isolate}.tile{position:relative;aspect-ratio:1/.95;min-width:0;display:grid;place-items:center;padding:1px;border:1px solid #8ec78a20;border-radius:8px;background:linear-gradient(155deg,#34684b,#2a573e);box-shadow:0 3px #163a2d;color:#f8ffe9;overflow:hidden;transition:border-color .16s,transform .16s,filter .16s}.tile:not(:disabled):hover{z-index:5;transform:translateY(-3px);border-color:#d0dca2;filter:brightness(1.13)}.tile:nth-child(3n){background:linear-gradient(155deg,#3a6b49,#2e5d42)}.tile:nth-child(11n){background:linear-gradient(155deg,#386844,#31543c)}.tile.path{background:linear-gradient(145deg,#6f7652,#4c6248)}.tile.path:before{content:"";position:absolute;inset:38% -10%;transform:rotate(-13deg);background:#c3ac7955;pointer-events:none}.tile.pond{background:linear-gradient(150deg,#387986,#1b5265);box-shadow:0 3px #183f4b}.tile.grove{background:linear-gradient(150deg,#2d6449,#1d4938)}.tile.rock{background:linear-gradient(150deg,#657a68,#52635c)}.tile.blocked{cursor:not-allowed}.tile.placeable:not(.occupied):after{content:"+";font-size:20px;color:#eaffdc;display:grid;place-items:center;position:absolute;inset:4px;border:1px dashed #d1ecc17c;border-radius:5px;background:#a4e8a11a;opacity:.65}.tile.placeable:not(.occupied):hover:after{opacity:1;background:#a4e8a133}.tile.occupied{background:linear-gradient(160deg,#295e50,#173d37);border-color:#95e0a183}.tile.occupied:hover{border-color:#ffe2a7}.tile.chosen{outline:2px solid var(--gold);outline-offset:-2px;z-index:4}.tile .tile-emoji{position:relative;z-index:1;font-size:clamp(1.15rem,2.2vw,1.85rem);filter:drop-shadow(0 3px 2px #0007);line-height:1}.tile .tile-name{position:absolute;bottom:2px;left:1px;right:1px;text-align:center;font-size:.47rem;z-index:2;text-shadow:0 1px 3px #000,0 0 5px #000;white-space:nowrap;font-weight:800;overflow:hidden;text-overflow:ellipsis}.tile .faint{opacity:.45;font-size:clamp(.8rem,1.6vw,1.3rem)}.tile.occupied .tile-emoji{transform:translateY(-4px)}.tile.occupied:before{content:"";position:absolute;inset:15% 10% 11%;border-radius:6px;background:#091c1e88;box-shadow:0 5px 0 #07161655}
+.map-foot{padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:.71rem;color:var(--muted);border-top:1px solid #315549}.legend{display:flex;gap:12px;flex-wrap:wrap}.legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:4px}.hint{font-size:.7rem;color:#ebd1a0}
+.actions{display:flex;gap:9px;flex-wrap:wrap;padding:15px 16px;border-top:1px solid var(--line);background:#0d2929}.primary,.secondary,.small-btn{border-radius:10px;padding:10px 13px;border:1px solid #47816b;font-size:.78rem;font-weight:700}.primary{background:var(--mint);color:#0b2820;border-color:var(--mint)}.primary:hover{background:#b5f9d0}.secondary,.small-btn{background:#204339;color:#e7f4df}.secondary:hover,.small-btn:hover{background:#2c614d}.small-btn{padding:7px 9px;font-size:.72rem}.actions .stretch{margin-left:auto}.status-line{padding:0 16px 14px;font-size:.75rem;color:var(--muted);background:#0d2929}
+.resources{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:12px}.resource{padding:9px 10px;border:1px solid #2c514a;border-radius:11px;background:#153332}.resource span{display:block;font-size:.67rem;color:var(--muted)}.resource b{display:block;font-size:1.18rem;font-variant-numeric:tabular-nums}.res-tools{display:flex;gap:6px;margin-top:10px}.res-tools button{flex:1}.line{height:1px;background:#2e534c;margin:18px 0}.goals{display:grid;gap:10px;margin-top:10px}.goal-row{display:grid;grid-template-columns:19px 1fr;gap:8px;font-size:.75rem;align-items:start}.check{width:17px;height:17px;border:1px solid #66846a;border-radius:50%;display:grid;place-items:center;color:#204f3c}.check.complete{background:var(--mint);border-color:var(--mint);color:#0b2924;font-size:.74rem}.goal-row strong{display:block;font-size:.76rem}.goal-row small{display:block;color:var(--muted);line-height:1.35;font-size:.69rem;margin-top:2px}.inspect{border:1px solid #466958;background:#183c36;border-radius:12px;padding:11px;min-height:124px}.inspect h3{margin:0 0 4px;font-size:.86rem}.inspect p{font-size:.74rem;color:#c2d5c6;margin:4px 0 9px}.inspect .real{color:var(--gold);font-size:.72rem}.journal{display:grid;gap:8px;max-height:200px;overflow:auto}.entry{font-size:.72rem;border-left:2px solid #487967;padding-left:9px;color:#c6d5c7}.entry small{display:block;color:var(--mint);margin-bottom:2px}.about{display:flex;gap:10px;align-items:flex-start;margin-top:16px;color:#acc3b2;font-size:.74rem}.about b{color:var(--gold)}
+.footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-top:14px;font-size:.72rem;color:#93b3a6}.footer a{color:var(--mint)}.toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,20px);z-index:30;background:#17382f;color:white;border:1px solid #7ee3bcaa;box-shadow:0 12px 35px #000a;border-radius:13px;padding:13px 17px;max-width:min(92vw,650px);font-size:.87rem;opacity:0;pointer-events:none;transition:.25s}.toast.show{transform:translate(-50%,0);opacity:1}.sr-only{position:absolute;clip:rect(0,0,0,0);width:1px;height:1px;overflow:hidden;white-space:nowrap}
+@media(max-width:1230px){.layout{grid-template-columns:250px minmax(0,1fr)}.right-pane{grid-column:1/-1}.right-pane .panel-pad{display:grid;grid-template-columns:1fr 1fr;column-gap:18px}.right-pane .panel-pad>.section-top:first-child,.right-pane .panel-pad>.resources,.right-pane .panel-pad>.res-tools{grid-column:1}.right-pane .panel-pad>.line{display:none}.right-pane .panel-pad>.goals,.right-pane .panel-pad>.inspect,.right-pane .panel-pad>.journal,.right-pane .panel-pad>.about{grid-column:2}.right-pane .panel-pad>.section-top:nth-of-type(2),.right-pane .panel-pad>.section-top:nth-of-type(3),.right-pane .panel-pad>.section-top:nth-of-type(4){grid-column:2}.right-pane .panel-pad .goals{margin-bottom:12px}}
+@media(max-width:790px){.map-head small:after{content:' · Swipe map sideways to explore';color:var(--gold)}.hero{display:block}.guide{max-width:none;margin-top:16px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.layout{grid-template-columns:minmax(0,1fr)}.left-pane{order:2}.map-pane{order:1}.right-pane{order:3}.build-list{grid-template-columns:repeat(2,minmax(0,1fr));max-height:none}.toplinks a{display:none}.right-pane .panel-pad{display:block}.right-pane .panel-pad>.line{display:block}.map-frame{padding:14px 12px}.hero h1{font-size:2.3rem}}
+@media(max-width:470px){.shell{padding:12px 10px 30px}.brand b{font-size:.82rem}.chip{font-size:.58rem}.stat{padding:10px}.stat b{font-size:1.5rem}.map-head{padding:12px}.actions{gap:7px}.actions button{flex:1}.actions .stretch{margin-left:0}.build-list{grid-template-columns:1fr 1fr}.build-btn{grid-template-columns:1fr;text-align:center;gap:2px;padding:7px}.build-btn .emoji{font-size:1.55rem}.map-grid{min-width:555px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+ <header class="topbar">
+   <div class="brand"><div class="mark" aria-hidden="true">KÖG</div><div><b>KÁRAKÖG <span style="color:var(--mint)">/ VILLAGE</span></b><small>THE STEWARDSHIP SIMULATION</small></div></div>
+   <div class="toplinks"><a href="https://k-0-g.github.io/MaBit/">↗ Return to Má Bit</a><span class="chip">PROTOTYPE • 001</span></div>
+ </header>
+ <section class="hero">
+   <div><div class="eyebrow">Build to belong · Not to conquer</div><h1>What makes a village <em>thrive?</em></h1><p>Place modular habitats, share resources and invite neighbours into a growing community. In KÖG Village, success means meeting needs, passing on skills and leaving more than you take.</p></div>
+   <div class="guide"><strong>Your first mission</strong>Build a HAB home on an empty green plot, welcome a neighbour, then advance a week to see how the community works.</div>
+ </section>
+ <section class="stats" aria-label="Village summary">
+   <div class="stat"><span>People housed</span><b id="housed">4 / 4</b><small id="waiting">3 waiting</small><span class="sub">Housing comes first</span></div>
+   <div class="stat"><span>Community trust</span><b id="trust">54</b><small>/ 100</small><span class="sub" id="trust-label">Growing together</span></div>
+   <div class="stat"><span>Self-sufficiency</span><b id="resilience">0%</b><span class="sub">Food · water · power</span></div>
+   <div class="stat"><span>Back-flow given</span><b id="care-spent">0</b><small>community credits</small><span class="sub">Value returned to people</span></div>
+ </section>
+ <main class="layout">
+   <aside class="panel left-pane" aria-label="Construction and policy tools">
+    <div class="panel-pad">
+     <div class="section-top"><h2>Build a better village</h2><span>01 / Modules</span></div>
+     <p class="subtitle">Choose a module, then select an empty plot on the map.</p>
+     <div class="build-list" id="build-list"></div>
+     <div class="divider"></div>
+     <div class="section-top"><h2>Village charter</h2><span>02 / Policy</span></div>
+     <p class="subtitle">Where should the shared treasury go each week?</p>
+     <div class="policy-tabs"><button type="button" id="policy-care" class="selected">↗ Back-flow</button><button type="button" id="policy-save">◈ Reserves</button></div>
+     <p class="policy-text" id="policy-text">Spend 6 credits a week on community support to build trust. Spending is skipped if funds are insufficient.</p>
+    </div>
+   </aside>
+   <section class="map-pane" aria-label="Interactive village map">
+      <div class="map-head"><div><strong>Settlement 01 · Greenhaven</strong><small>A fictional Scottish coastal community</small></div><span class="week" id="week">Week 01</span></div>
+      <div class="map-frame"><div class="map-grid" id="map" role="group" aria-label="Village building grid: choose a module, then a tile"></div></div>
+      <div class="map-foot"><div class="legend"><span><i style="background:#5f9d68"></i>Buildable</span><span><i style="background:#357987"></i>Water</span><span><i style="background:#7d8b71"></i>Protected land</span></div><span class="hint" id="placement-hint">Selected: HAB Home · choose a plot</span></div>
+      <div class="actions"><button class="primary" id="next-week">Advance 1 week →</button><button class="secondary" id="invite">＋ Welcome neighbour</button><button class="secondary stretch" id="reset" title="Return to the start">↺ Restart</button></div>
+      <div class="status-line" id="week-summary" aria-live="polite">A village begins with people, shared space and a plan.</div>
+   </section>
+   <aside class="panel right-pane" aria-label="Resources and goals">
+     <div class="panel-pad">
+      <div class="section-top"><h2>Shared resources</h2><span>Live ledger</span></div>
+      <div class="resources" id="resources"></div>
+      <div class="res-tools"><button class="small-btn" id="trade-wood">Buy 10 timber · 10 ¢</button><button class="small-btn" id="trade-salvage">Buy 5 salvage · 10 ¢</button></div>
+      <div class="line"></div>
+      <div class="section-top"><h2>Village milestones</h2><span id="goals-count">0 / 5</span></div>
+      <div class="goals" id="goals"></div>
+      <div class="line"></div>
+      <div class="section-top"><h2>Explore a module</h2></div>
+      <div class="inspect" id="inspect" aria-live="polite"></div>
+      <div class="line"></div>
+      <div class="section-top"><h2>Village journal</h2><span>Latest events</span></div>
+      <div class="journal" id="journal"></div>
+      <div class="about"><span style="font-size:1.35rem">✦</span><div><b>A simulation, not a feasibility study.</b> Costs and production values are illustrative game mechanics, not quotes, planning assessments or verified infrastructure figures. No account or server is required; your progress is saved in this browser when storage is available.</div></div>
+     </div>
+   </aside>
+ </main>
+ <footer class="footer"><span>KÖG Village • A concept by KáraKÖG • Built to explore stewardship, not extract profit.</span><span>From <a href="https://k-0-g.github.io/MaBit/">Má Bit</a> · A community starts somewhere.</span></footer>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(() => {
+'use strict';
+const COLS=12, ROWS=9, KEY='kog-village-demo-v1';
+const MODULES={
+ home:{label:'HAB Home',icon:'🏡',desc:'Modular home · +2 places',cost:{credits:25,timber:10,salvage:8},upkeep:1,about:'A flexible habitat creates two safe places to live. Build more before welcoming new people.',real:'Prototype idea: adaptable static-caravan accommodation, subject to site, safety and planning requirements.'},
+ garden:{label:'Food Garden',icon:'🌱',desc:'Grows +10 food / week',cost:{credits:18,timber:6,salvage:2},upkeep:1,about:'Community-grown food reduces dependence on outside supply chains.',real:'Prototype idea: shared growing beds, composting and local food partnerships.'},
+ solar:{label:'Solar Array',icon:'☀️',desc:'Generates +12 power / week',cost:{credits:27,timber:5,salvage:10},upkeep:2,about:'Reliable generation supports homes and skill workshops. Each week, power is used as it is generated.',real:'Prototype idea: assess solar generation and batteries against actual Scottish climate and demand.'},
+ water:{label:'Water System',icon:'💧',desc:'Supplies +12 water / week',cost:{credits:22,timber:5,salvage:6},upkeep:1,about:'Infrastructure matters as much as buildings. Residents use safe water every week.',real:'Prototype idea: approved water supply, conservation and appropriate wastewater infrastructure.'},
+ wood:{label:'Wood Workshop',icon:'🪵',desc:'+6 timber & +8 ¢ / week',cost:{credits:29,timber:10,salvage:8},upkeep:2,power:2,about:'Local woodworking produces reusable components and income, while teaching practical skills.',real:'HAB-001 Wood: a modular carpentry and repair workspace.'},
+ repair:{label:'Repair Workshop',icon:'🔧',desc:'+4 salvage & +11 ¢ / week',cost:{credits:28,timber:6,salvage:10},upkeep:2,power:4,about:'Repair turns old equipment into valuable assets. Successful work supports the shared treasury.',real:'Community IT repair and electronics refurbishment, using safe waste-handling practices.'},
+ it:{label:'IT / Comms Lab',icon:'💻',desc:'+14 ¢ / week · skills',cost:{credits:36,timber:8,salvage:12},upkeep:2,power:5,about:'Digital skills and services support remote work, connectivity and access to essential systems.',real:'HAB-001 IT Lab and the proposed KÖG Machine / communications network.'},
+ commons:{label:'Community Commons',icon:'🏛️',desc:'+3 trust / week',cost:{credits:24,timber:10,salvage:5},upkeep:1,power:1,about:'Meeting and learning together grows the trust that makes cooperation possible.',real:'Shared community space for planning, education, volunteering and mutual aid.'},
+ moto:{label:'Moto Workshop',icon:'🏍️',desc:'+13 ¢ / week',cost:{credits:31,timber:8,salvage:10},upkeep:2,power:4,about:'A small servicing workshop creates skilled work and serves neighbouring settlements.',real:'HAB-001 Moto: motorcycle maintenance, tooling and practical instruction.'},
+ forge:{label:'Forge Workshop',icon:'⚒️',desc:'+20 ¢ / week',cost:{credits:42,timber:7,salvage:15},upkeep:3,power:7,about:'Metalworking expands manufacturing capability but requires significant energy.',real:'HAB-001 Forge: investigate specialist safety, ventilation, approvals and insurance.'}
+};
+const ORDER=['home','garden','solar','water','wood','repair','it','commons','moto','forge'];
+const START_BUILDINGS={'5,4':'hub','4,4':'home','6,4':'home','3,3':'garden','7,3':'solar','8,3':'water'};
+const HUB={label:'Village Hub',icon:'🏠',about:'Shared coordination, mutual aid, maintenance and the first source of local trade income.',real:'A real settlement needs governance, safeguarding, service coordination and clear responsibility.'};
+const BAD=new Set(['0,1','0,2','0,3','1,2','1,3','11,6','11,7','10,7','1,0','2,0','9,0','10,0','2,7','2,8','10,2']);
+const TYPE={}; for(const k of BAD){const [x,y]=k.split(',').map(Number); TYPE[k]=(x===0||x===11&&y>=6)?'pond':((x+y)%4===0?'rock':'grove')}
+const objectives=[
+ {name:'Everyone has a place',desc:'House all 7 original neighbours.',test:s=>s.residents>=7},
+ {name:'Skills that circulate',desc:'Build a Wood, Repair, Moto, Forge or IT workshop.',test:s=>Object.values(s.buildings).some(b=>['wood','repair','moto','forge','it'].includes(b))},
+ {name:'Supply your community',desc:'Have enough weekly food, water and power.',test:s=>{const f=flows(s);return f.food>=f.foodNeed&&f.water>=f.waterNeed&&f.power>=f.powerNeed}},
+ {name:'Earn community trust',desc:'Reach at least 70 trust.',test:s=>s.trust>=70},
+ {name:'Return the surplus',desc:'Put 24 credits back into community care.',test:s=>s.careSpent>=24}
+];
+const fresh=()=>({version:1,week:1,credits:125,timber:35,salvage:28,food:18,water:18,trust:54,residents:4,waiting:3,careSpent:0,policy:'care',selected:'home',inspect:'home',buildings:{...START_BUILDINGS},journal:[{week:1,text:'The Village Hub, two homes and essential supplies are ready. Three neighbours are awaiting housing.'}],summary:'A village begins with people, shared space and a plan.',unlocked:[]});
+let s=load();let lastToast=0;
+const el=id=>document.getElementById(id);
+function load(){try{const data=JSON.parse(localStorage.getItem(KEY));if(data&&data.version===1&&data.buildings&&typeof data.credits==='number'&&typeof data.week==='number')return {...fresh(),...data}}catch(e){} return fresh()}
+function persist(){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
+function counts(state=s){let c={hub:0};for(const k of Object.keys(MODULES))c[k]=0;for(const b of Object.values(state.buildings))c[b]=(c[b]||0)+1;return c}
+function flows(state=s){const c=counts(state), housing=c.home*2, food=c.garden*10, water=c.water*12, power=c.solar*12;
+ const powerNeed=state.residents+(c.hub||0)+c.garden+c.water+c.commons+c.wood*2+c.repair*4+c.it*5+c.moto*4+c.forge*7;
+ const skilledIncome=c.wood*8+c.repair*11+c.it*14+c.moto*13+c.forge*20;
+ const income=5+Math.floor(skilledIncome*(power>=powerNeed?1:.5));
+ const upkeep=2+Object.entries(MODULES).reduce((sum,[k,d])=>sum+c[k]*d.upkeep,0);
+ return {housing,food,water,power,powerNeed,foodNeed:state.residents*2,waterNeed:state.residents*2,income,upkeep,timber:c.wood*6,salvage:c.repair*4,trust:c.commons*3,c};
+}
+function toast(message){const t=el('toast');t.textContent=message;t.classList.add('show');clearTimeout(lastToast);lastToast=setTimeout(()=>t.classList.remove('show'),2800)}
+function addJournal(text){s.journal.unshift({week:s.week,text});s.journal=s.journal.slice(0,11)}
+function afford(cost){return Object.entries(cost).every(([k,v])=>s[k]>=v)}
+function keyOf(x,y){return `${x},${y}`}
+function tileKind(x,y){return TYPE[keyOf(x,y)]||(y===4||x===5?'path':'grass')}
+function changeSelection(id){s.selected=id;s.inspect=id;delete s.inspectedKey;persist();render()}
+function build(x,y){const k=keyOf(x,y);if(s.buildings[k]){s.inspect=s.buildings[k];s.inspectedKey=k;renderInspect();renderMap();return}
+ if(TYPE[k]){toast('That plot is protected or water-covered. Choose an open plot.');return}
+ const d=MODULES[s.selected];if(!d){toast('Select a module to build.');return}
+ if(!afford(d.cost)){toast('Not enough resources yet. Try the local trade exchange or a workshop.');return}
+ for(const [name,n] of Object.entries(d.cost))s[name]-=n;
+ s.buildings[k]=s.selected;s.inspect=s.selected;s.inspectedKey=k;
+ addJournal(`Constructed ${d.label}. ${d.desc}.`);
+ s.summary=`${d.label} is now part of the village. Advance a week to see its effects.`;
+ saveRender();toast(`${d.icon} ${d.label} established.`)
+}
+function welcome(){const f=flows();if(s.waiting<=0){toast('All neighbours on the waiting list have homes.');return}if(s.residents>=f.housing){toast('No places available. Build a HAB Home first.');return}if(s.food<2||s.water<2){toast('We need food and water reserves before welcoming someone.');return}if(s.trust<30){toast('Trust is too low. Invest in community support first.');return}
+ s.residents++;s.waiting--;s.trust=Math.min(100,s.trust+3);addJournal('Welcomed a neighbour into secure accommodation. Trust grew by 3.');s.summary='A neighbour joined the village. Each resident needs 2 food and 2 water per week.';
+ saveRender();toast('🏡 Someone has a safe place to call home.')}
+function nextWeek(){const f=flows();const newWeek=s.week+1;
+ s.week=newWeek;
+ s.food+=f.food-f.foodNeed;s.water+=f.water-f.waterNeed;
+ let problems=[];
+ if(s.food<0){s.food=0;s.trust-=8;problems.push('food shortage')}
+ if(s.water<0){s.water=0;s.trust-=8;problems.push('water shortage')}
+ if(f.power<f.powerNeed){s.trust-=3;problems.push('power shortage')}
+ s.timber+=f.timber;s.salvage+=f.salvage;
+ s.credits+=f.income-f.upkeep;
+ let careNow=0;
+ if(s.policy==='care'&&s.credits>=6){s.credits-=6;s.careSpent+=6;s.trust+=2;careNow=6}
+ else if(s.policy==='care')problems.push('community-care budget paused');
+ s.trust+=f.trust;
+ if(s.waiting>0)s.trust-=1;else s.trust+=1;
+ if(s.credits<0){s.credits=0;s.trust-=4;problems.push('treasury depleted')}
+ s.trust=Math.max(0,Math.min(100,s.trust));
+ if(s.week===4){s.salvage+=8;s.trust=Math.min(100,s.trust+2);addJournal('Neighbouring volunteers donated reclaimed materials (+8 salvage) and offered their support (+2 trust).')}
+ if(s.week===8){s.waiting+=1;addJournal('A new neighbour needs housing. The village can choose how to grow.')}
+ const note=problems.length?`Week ${s.week}: ${problems.join(', ')}. Keep basic needs covered.`:`Week ${s.week}: food ${signed(f.food-f.foodNeed)}, water ${signed(f.water-f.waterNeed)}, treasury ${signed(f.income-f.upkeep-careNow)} (approx.).`;
+ s.summary=note;
+ addJournal(note);
+ checkGoals();saveRender();toast(problems.length?'⚠ Village needs attention. See the journal.':'🌿 Another week of village life.')
+}
+function signed(n){return (n>=0?'+':'')+n}
+function checkGoals(){for(let i=0;i<objectives.length;i++){if(objectives[i].test(s)&&!s.unlocked.includes(i)){s.unlocked.push(i);addJournal(`Milestone reached: ${objectives[i].name}!`)}}}
+function trade(kind){if(s.credits<10){toast('The exchange requires 10 community credits.');return}s.credits-=10;s[kind]+=kind==='timber'?10:5;addJournal(`Exchanged 10 credits for ${kind==='timber'?'10 timber':'5 reclaimed materials'}.`);s.summary='The exchange helps bridge shortages, but local production creates longer-term resilience.';saveRender()}
+function inspectTile(k,id){s.inspect=id;s.inspectedKey=k;persist();renderInspect();renderMap()}
+function demolish(){const k=s.inspectedKey;if(!k||!s.buildings[k]||s.buildings[k]==='hub')return;const id=s.buildings[k], d=MODULES[id];if(!d)return;
+ if(id==='home'&&flows().housing-2<s.residents){toast('This would leave someone without a home. Build replacement housing first.');return}
+ delete s.buildings[k];s.timber+=Math.floor(d.cost.timber/2);s.salvage+=Math.floor(d.cost.salvage/2);s.inspect=id;delete s.inspectedKey;addJournal(`Reconfigured ${d.label}; some materials were reclaimed.`);s.summary='Modularity makes spaces adaptable, though not all invested resources can be recovered.';saveRender()}
+function saveRender(){checkGoals();persist();render()}
+function renderBuilds(){el('build-list').innerHTML='';for(const id of ORDER){const d=MODULES[id];const b=document.createElement('button');b.type='button';b.className='build-btn'+(s.selected===id?' active':'');b.setAttribute('aria-pressed',s.selected===id?'true':'false');b.innerHTML=`<span class="emoji" aria-hidden="true">${d.icon}</span><span><strong>${d.label}</strong><small>${d.desc}</small><span class="cost">${d.cost.credits} ¢ · ${d.cost.timber} 🪵 · ${d.cost.salvage} ♻</span></span>`;b.addEventListener('click',()=>changeSelection(id));el('build-list').appendChild(b)}}
+function renderMap(){const map=el('map');map.innerHTML='';for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){const k=keyOf(x,y),kind=tileKind(x,y),occupied=s.buildings[k],d=occupied?(MODULES[occupied]||HUB):null;const b=document.createElement('button');b.type='button';b.className=`tile ${kind} ${occupied?'occupied':'placeable'} ${TYPE[k]?'blocked':''} ${s.inspectedKey===k?'chosen':''}`;b.title=occupied?d.label:TYPE[k]?`Protected ${kind}`:`Plot ${x+1}, ${y+1} — build ${MODULES[s.selected].label}`;
+ b.setAttribute('aria-label',b.title);
+ if(occupied)b.innerHTML=`<span class="tile-emoji" aria-hidden="true">${d.icon}</span><span class="tile-name">${occupied==='hub'?'HUB':d.label}</span>`;
+ else if(TYPE[k])b.innerHTML=`<span class="tile-emoji faint" aria-hidden="true">${kind==='pond'?'≈':kind==='grove'?'🌲':'◆'}</span>`;
+ else b.innerHTML=`<span class="sr-only">Available plot</span>`;
+ b.addEventListener('click',()=>build(x,y));map.appendChild(b)}
+ el('placement-hint').textContent=`Selected: ${MODULES[s.selected].label} · choose an open plot`}
+function renderResources(){const f=flows();const vals=[['¢','Treasury',s.credits],['🪵','Timber',s.timber],['♻','Reclaimed',s.salvage],['🥕','Food stores',s.food],['💧','Water stores',s.water],['⚡','Power margin',f.power-f.powerNeed]];
+ el('resources').innerHTML=vals.map(([icon,name,n])=>`<div class="resource"><span>${icon} ${name}</span><b style="color:${n<0?'var(--red)':'var(--text)'}">${n}</b></div>`).join('')}
+function renderGoals(){el('goals').innerHTML=objectives.map((o,i)=>{const done=s.unlocked.includes(i)||o.test(s);return `<div class="goal-row"><span class="check ${done?'complete':''}">${done?'✓':''}</span><div><strong>${o.name}</strong><small>${o.desc}</small></div></div>`}).join('');el('goals-count').textContent=`${objectives.filter((_,i)=>s.unlocked.includes(i)||objectives[i].test(s)).length} / ${objectives.length}`}
+function renderInspect(){const d=MODULES[s.inspect]||HUB;const active=s.inspectedKey&&s.buildings[s.inspectedKey]&&s.buildings[s.inspectedKey]!=='hub';el('inspect').innerHTML=`<h3>${d.icon} ${d.label}</h3><p>${d.about}</p><div class="real"><b>Real-world connection:</b> ${d.real}</div>${active?'<button class="small-btn" id="demolish" style="margin-top:11px">↺ Reconfigure (recover materials)</button>':''}`;const dem=el('demolish');if(dem)dem.addEventListener('click',demolish)}
+function renderJournal(){el('journal').innerHTML='';for(const entry of s.journal.slice(0,5)){const box=document.createElement('div');box.className='entry';const small=document.createElement('small');small.textContent=`WEEK ${String(entry.week).padStart(2,'0')}`;const text=document.createElement('span');text.textContent=entry.text;box.append(small,text);el('journal').appendChild(box)}}
+function render(){const f=flows();el('housed').textContent=`${s.residents} / ${f.housing}`;el('waiting').textContent=`${s.waiting} waiting`;
+ el('trust').textContent=s.trust;el('trust-label').textContent=s.trust>=70?'Working together':s.trust>=40?'Building confidence':'Care needs attention';
+ const sufficient=[f.food>=f.foodNeed,f.water>=f.waterNeed,f.power>=f.powerNeed];el('resilience').textContent=`${Math.round(sufficient.filter(Boolean).length/3*100)}%`;
+ el('care-spent').textContent=s.careSpent;el('week').textContent=`Week ${String(s.week).padStart(2,'0')}`;el('week-summary').textContent=s.summary;
+ el('policy-care').classList.toggle('selected',s.policy==='care');el('policy-save').classList.toggle('selected',s.policy==='save');el('policy-care').setAttribute('aria-pressed',s.policy==='care');el('policy-save').setAttribute('aria-pressed',s.policy==='save');
+ el('policy-text').textContent=s.policy==='care'?'Spend 6 credits each week on mutual aid and support (+2 trust). Paused if the treasury runs low.':'Hold funds in reserve to protect future building and maintenance budgets. Trust grows more slowly.';
+ renderBuilds();renderMap();renderResources();renderGoals();renderInspect();renderJournal();}
+ el('next-week').addEventListener('click',nextWeek);el('invite').addEventListener('click',welcome);
+ el('policy-care').addEventListener('click',()=>{s.policy='care';persist();render()});el('policy-save').addEventListener('click',()=>{s.policy='save';persist();render()});
+ el('trade-wood').addEventListener('click',()=>trade('timber'));el('trade-salvage').addEventListener('click',()=>trade('salvage'));
+ el('reset').addEventListener('click',()=>{if(confirm('Restart the village? This clears saved progress in this browser.')){s=fresh();persist();render();toast('New village, new possibilities.')}});
+ render();
+})();
+</script>
+</body>
+</html>
