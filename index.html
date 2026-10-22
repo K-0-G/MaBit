@@ -149,6 +149,89 @@
       html { scroll-behavior: auto; }
       .neuron--target.just-connected { animation: none; }
     }
+    
+/* The existing neural network container */
+#neural-network {
+    position: relative;
+}
+
+/* Örbit sphere */
+.orbit-neuron {
+    position: absolute;
+
+    /* Position above MaBit */
+    left: 20%;
+    top: 18%;
+
+    /* Centre on those coordinates */
+    transform: translate(-50%, -50%);
+
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+
+    background: radial-gradient(
+        circle at 50% 40%,
+        #254d65,
+        #0c2032
+    );
+
+    border: 2px solid #69dff5;
+    box-shadow: 0 0 22px #43c7e533;
+
+    /* Centre the label */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+
+    text-align: center;
+    color: white;
+    text-decoration: none;
+
+    /* Interaction */
+    cursor: pointer;
+    z-index: 5;
+    transition: box-shadow 0.3s,
+                border-color 0.3s;
+}
+
+/* Main text */
+.orbit-neuron strong {
+    font-size: 24px;
+    font-weight: 800;
+}
+
+/* Subtitle */
+.orbit-neuron span {
+    font-size: 13px;
+    color: #b5dfff;
+}
+
+/* Hover or keyboard focus */
+.orbit-neuron:hover,
+.orbit-neuron:focus-visible {
+    border-color: #ffffff;
+    box-shadow: 0 0 35px #69dff599;
+    outline-offset: 4px;
+}
+
+/* Dashed neural connection */
+.orbit-connection {
+    position: absolute;
+
+    left: 20%;
+    top: 18%;
+    height: 34%;
+
+    border-left: 3px dashed #28465e;
+    transform: translateX(-50%);
+
+    z-index: 0;
+    pointer-events: none;
+}
+
   </style>
 </head>
 <body>
@@ -166,7 +249,6 @@
       <p class="eyebrow">KáraKÖG / a space for connecting ideas</p>
       <h1 id="page-title">Every connection begins somewhere.</h1>
       <p class="intro">Welcome to MaBit. Explore community cooperation, practical technology and the projects taking shape around them. Start with a connection.</p>
-      <a href="orbit.html">Explore Örbit - The Mars Simulation</a>
       <div class="gesture-guide" aria-label="How to use the explorer">
         <span class="pill"><strong>Quick click / tap:</strong> snap</span>
         <span class="pill"><strong>Click / press and hold:</strong> grow</span>
@@ -202,11 +284,17 @@
         </g>
         <circle id="signal" r="7" cx="200" cy="286" />
       </svg>
-
+      <div id="neural-network" class="existing-class">
+        <!-- Connection between Örbit and MaBit -->
+        <div class="orbit-connection" aria-hidden="true"></div>
+        <!-- Örbit: Mars Civilisation Simulation -->
+        <a href="orbit.html" class="orbit-nueron" aria-label="Explore Örbit, our Mars civilisation simulation">
+          <strong>Örbit</strong>
+          <span>Mars Simulation</span>
+        </a>
       <div class="neuron neuron--home" aria-label="MaBit, starting point">
         <span class="neuron__title">MaBit</span>
         <span class="neuron__sub">Start here</span>
-      </div>
       <button type="button" class="neuron neuron--target neuron--kara" data-node="kara" aria-pressed="false" aria-label="Connect to Kára, community interest">
         <span class="neuron__title">Kára</span><span class="neuron__sub">Community</span>
       </button>
@@ -219,6 +307,7 @@
       <button type="button" class="neuron neuron--target neuron--hab" data-node="hab" aria-pressed="false" aria-label="Connect to HAB-001, habitat project">
         <span class="neuron__title">HAB-001</span><span class="neuron__sub">Habitats</span>
       </button>
+      </div>
     </section>
 
     <section class="readout" aria-label="Selected connection">
