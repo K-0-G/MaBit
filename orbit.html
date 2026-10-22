@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#070c18">
+  <meta name="description" content="Örbit by KáraKÖG: an interactive walkthrough of a speculative Earth–Moon–Mars civilisation simulation, its assumptions, results and uncertainties.">
+  <title>Örbit | Earth · Moon · Mars | Má Bit</title>
+  <style>
+    :root{color-scheme:dark;--bg:#070c18;--deep:#0b1323;--panel:#101c31;--panel2:#12223a;--line:#304056;--text:#f4f2eb;--muted:#adbed0;--ember:#f8a57d;--coral:#ed795e;--cyan:#83dfda;--gold:#ead7a4;--radius:22px;--max:1160px}
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth;scroll-padding-top:85px}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.64;overflow-x:hidden}
+    body::before{content:"";position:absolute;inset:0 0 auto;min-height:1100px;background:radial-gradient(ellipse at 75% 14%,#4c2d35a1 0,transparent 33%),radial-gradient(ellipse at 30% 27%,#18365c75 0,transparent 46%);pointer-events:none;z-index:-1}
+    a{color:var(--cyan);text-underline-offset:4px}a:hover{color:white}
+    button,input{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
+    .wrap{width:min(calc(100% - 36px),var(--max));margin-inline:auto}
+    .skip{position:absolute;left:16px;top:-90px;z-index:20;padding:10px;background:#fff;color:#000}.skip:focus{top:8px}
+    header{position:sticky;top:0;z-index:10;background:#08101de8;border-bottom:1px solid #73869c30;backdrop-filter:blur(18px)}
+    .nav{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:66px}
+    .brand{display:flex;align-items:baseline;gap:10px;text-decoration:none;color:white;font-weight:800;letter-spacing:.04em}.brand b{color:var(--ember);font-size:1.32rem}.brand span{font-size:.78rem;color:var(--muted);font-weight:500}
+    nav{display:flex;gap:clamp(10px,2.3vw,30px);overflow-x:auto;white-space:nowrap;scrollbar-width:none}nav a{color:#d5dfed;font-size:.82rem;text-decoration:none}nav a:hover{color:var(--cyan)}
+    .eyebrow{font-size:.74rem;text-transform:uppercase;letter-spacing:.19em;color:var(--cyan);font-weight:750}
+    h1,h2,h3,p{margin-top:0}h1,h2{line-height:1.1;letter-spacing:-.04em}h1{font-size:clamp(4.6rem,12.8vw,10.7rem);margin:.16em 0 .1em;font-weight:750}h2{font-size:clamp(2rem,5vw,3.8rem);max-width:760px;margin-bottom:18px}h3{font-size:1.17rem;line-height:1.3;margin-bottom:10px}p{color:#ced9e5}
+    .hero{position:relative;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(240px,.9fr);align-items:center;gap:10px;min-height:570px;padding-block:65px 30px}
+    .hero h1 span{background:linear-gradient(95deg,#fff 22%,#ffd5b9 70%,#e88b70);background-clip:text;-webkit-background-clip:text;color:transparent}
+    .intro{font-size:clamp(1.06rem,1.8vw,1.29rem);max-width:580px}
+    .hero-btns{display:flex;flex-wrap:wrap;gap:12px;margin:25px 0 20px}
+    .btn{display:inline-flex;justify-content:center;align-items:center;gap:9px;background:linear-gradient(125deg,var(--ember),#f5c19e);color:#18131a;border:1px solid transparent;border-radius:999px;padding:11px 19px;min-height:48px;text-decoration:none;font-weight:750;transition:transform .2s,box-shadow .2s}.btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px #ff986044;color:#21151b}
+    .btn.secondary{background:#182b41b8;color:white;border-color:#57718a}.btn.secondary:hover{color:white;box-shadow:0 8px 24px #183651cc}
+    .hero-note{color:#a9bbce;font-size:.82rem;max-width:570px}
+    .space{position:relative;isolation:isolate;aspect-ratio:1/1;min-height:310px;max-height:510px;display:grid;place-items:center}
+    .space::before{content:"";position:absolute;inset:4%;background-image:radial-gradient(#d3e9ffb8 1px,transparent 1.5px),radial-gradient(#d3e9ff8f 1px,transparent 1.5px);background-size:49px 52px,87px 79px;background-position:10px 7px,12px 26px;opacity:.43;mask-image:radial-gradient(circle,#000 42%,transparent 73%)}
+    .orbital{width:90%;aspect-ratio:1;position:absolute;border:1px solid #6f83974f;border-radius:50%;transform:rotate(-31deg) scaleY(.64)}.orbital.o2{width:64%;border-color:#af7f7a66;transform:rotate(34deg) scaleY(.7)}
+    .mars{position:relative;width:54%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 30% 28%,#f1a87f 0,#bf685b 32%,#8c3d40 62%,#3b2337 83%,#0c1022 100%);box-shadow:inset -27px -16px 34px #170a27ab,0 0 65px #f38b775c,0 0 135px #d3534633;overflow:hidden}
+    .mars::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 20% 40%,transparent 0 18%,#602d3855 20% 24%,transparent 26%),radial-gradient(ellipse at 70% 65%,#a7514770 0 20%,transparent 22%),linear-gradient(24deg,transparent 23%,#f2a37d22 26%,transparent 32%,#4c343922 50%,transparent 62%);transform:rotate(-15deg)}
+    .planet-label{position:absolute;font-size:.7rem;letter-spacing:.17em;color:#e8c9bd;text-transform:uppercase}
+    .planet-label.one{right:3%;top:22%}.planet-label.two{left:3%;bottom:20%}
+    .node-dot{width:12px;height:12px;background:var(--cyan);border-radius:50%;display:inline-block;box-shadow:0 0 0 7px #75e8dc18,0 0 25px #75e8dcc4;vertical-align:middle;margin-right:8px}
+    .section{padding-block:75px 25px;position:relative}.section .lede{font-size:1.11rem;max-width:760px}
+    .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-block:20px 0}.stat{padding:20px 18px;border:1px solid #43566c;background:linear-gradient(125deg,#14253cbd,#0d1728d9);border-radius:var(--radius);min-width:0}.stat strong{display:block;font-size:clamp(1.55rem,3.2vw,2.35rem);color:white;line-height:1.15;font-variant-numeric:tabular-nums}.stat p{margin:7px 0 0;color:var(--muted);font-size:.82rem;line-height:1.45}
+    .callout{border-left:3px solid var(--cyan);padding:13px 21px;background:#11243883;border-radius:0 12px 12px 0;margin:24px 0;color:#dce8e9}.callout.coral{border-color:var(--coral);background:#3e282e62}
+    .cols{display:grid;grid-template-columns:1fr 1fr;gap:17px}.card{border:1px solid #3a4f67;background:linear-gradient(145deg,#13233acc,#0c1526e8);border-radius:var(--radius);padding:clamp(18px,3vw,28px)}.card p:last-child{margin-bottom:0}
+    .mini-tag{display:inline-block;color:var(--ember);border:1px solid #c47b627d;border-radius:100px;font-size:.68rem;padding:3px 9px;letter-spacing:.09em;text-transform:uppercase;font-weight:700;margin-bottom:18px}
+    .track{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:7px;margin:24px 0 16px;position:relative}.phase{position:relative;display:grid;place-items:center;gap:10px;padding:14px 5px 12px;background:#172740;border:1px solid #394f67;color:#d4dce7;border-radius:15px;font-size:.71rem;line-height:1.3;min-height:98px;overflow:hidden;transition:background .2s,border-color .2s,transform .2s}.phase .num{font-size:1.3rem;font-weight:800;color:var(--muted)}.phase.active,.phase:hover{border-color:var(--cyan);background:#20454e;color:white}.phase.active .num{color:var(--cyan)}.phase:active{transform:scale(.96)}.phase::before{content:"";position:absolute;inset:auto 0 0;background:var(--cyan);height:3px;opacity:0}.phase.active::before{opacity:1}
+    .phase .fill{position:absolute;inset:auto auto 0 0;height:100%;width:0;background:linear-gradient(90deg,#70e9db0e,#70e9db33);pointer-events:none}.phase.holding .fill{width:var(--charge,0%)}
+    .neural-link{width:100%;height:66px;display:block;margin:4px 0 11px;overflow:visible}
+    .neural-link .branch{fill:none;stroke:#3d626e;stroke-width:2;stroke-linecap:round}
+    .neural-link .charge{fill:none;stroke:var(--cyan);stroke-width:4;stroke-linecap:round;filter:drop-shadow(0 0 7px #80f5e1a9);stroke-dasharray:100;stroke-dashoffset:100}
+    .neural-link .neuron{fill:#193c4b;stroke:#8fd6c7;stroke-width:2}
+    .neural-link .end{fill:var(--cyan);filter:drop-shadow(0 0 6px #81f5e0a0)}
+    .phase-display{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start;min-height:208px}.phase-symbol{border-radius:19px;background:#244654;border:1px solid #57858a;color:var(--cyan);font-size:2.5rem;display:grid;place-items:center;width:88px;height:88px}.phase-display h3{font-size:1.65rem}.phase-display small{color:var(--cyan);text-transform:uppercase;letter-spacing:.15em;font-weight:700}
+    .tiny{color:var(--muted);font-size:.83rem}
+    .time-map{margin-top:26px;display:grid;gap:11px}.range{display:grid;grid-template-columns:80px 1fr 120px;gap:15px;align-items:center}.range .barline{position:relative;height:34px;border-radius:8px;background:repeating-linear-gradient(90deg,#17283f 0,#17283f calc(25% - 1px),#34506b 25%);border:1px solid #37506b}.range .bar{position:absolute;top:7px;bottom:7px;border-radius:6px;background:linear-gradient(90deg,var(--cyan),#439e9f)}.range.mars-row .bar{background:linear-gradient(90deg,#ec9070,#c25a4c)}.range.stable-row .bar{background:linear-gradient(90deg,#e8d3a2,#a88357)}.range span{font-size:.82rem;color:#d4deeb}.axis{display:flex;justify-content:space-between;padding-left:95px;padding-right:132px;color:#98abbf;font-size:.72rem}
+    .model-steps{counter-reset:steps;display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.model-step{background:#111e30;border:1px solid #334960;border-radius:18px;padding:20px}.model-step::before{counter-increment:steps;content:"0" counter(steps);display:block;color:var(--cyan);font-weight:800;margin-bottom:10px}.model-step p{font-size:.9rem}
+    .lab{display:grid;grid-template-columns:minmax(250px,.9fr) minmax(0,1.1fr);gap:22px;align-items:stretch}.controls{display:grid;gap:19px}.control-header{display:flex;justify-content:space-between;gap:12px}.control-header label{font-weight:700}.control-header output{color:var(--cyan);font-weight:800;font-variant-numeric:tabular-nums}.controls input[type=range]{width:100%;accent-color:var(--cyan);cursor:pointer}.controls small{display:block;color:var(--muted)}
+    .readout{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.readout>div{padding:18px;border:1px solid #486079;background:#0b1829;border-radius:16px}.readout strong{display:block;font-size:2rem;line-height:1.3;color:var(--ember);font-variant-numeric:tabular-nums}.readout span{font-size:.78rem;color:#b4c4d5}
+    .bar-chart{margin-top:20px;border-left:1px solid #64788b;border-bottom:1px solid #64788b;height:154px;display:flex;align-items:end;gap:9px;padding:10px 10px 0;overflow:hidden}.bar-chart .segment{flex:1;min-width:0;position:relative;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px;height:100%}.bar-chart .bar{width:100%;background:linear-gradient(#f9bd94,#d7655e);border-radius:6px 6px 0 0;min-height:3px}.bar-chart small{font-size:.65rem;color:#b9c9da;position:absolute;bottom:-22px;white-space:nowrap}.chart-wrap{padding-bottom:26px}
+    .check-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.check{border:1px solid #3b526d;background:#15253b;padding:12px;border-radius:12px;display:flex;align-items:flex-start;gap:11px;cursor:pointer}.check:hover{border-color:#6ba5a6}.check input{accent-color:var(--cyan);width:18px;height:18px;margin-top:3px;flex-shrink:0}.check strong{display:block;font-size:.9rem}.check small{display:block;color:#aec0d2;font-size:.75rem}
+    .readiness{font-size:1.7rem;font-weight:800;color:var(--cyan);margin:0}.bar-meter{height:9px;background:#293e55;border-radius:30px;overflow:hidden;margin:12px 0 16px}.bar-meter>div{height:100%;width:0;background:linear-gradient(90deg,#438a9c,#91edd3);transition:width .35s}
+    details{border:1px solid #3b5069;border-radius:16px;background:#142238;padding:15px 20px;margin-top:10px}summary{cursor:pointer;font-weight:700;color:#eff3fa}details p{margin:12px 0 0}
+    .future-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.future-card{padding:20px;background:#121f34;border:1px solid #334960;border-radius:18px}.future-card b{display:block;color:var(--ember);font-size:.83rem;letter-spacing:.04em;margin-bottom:8px}.future-card p{font-size:.87rem}
+    .source-list{display:grid;grid-template-columns:1fr 1fr;gap:14px}.source-list a{display:block;background:#14243a;border:1px solid #32485e;border-radius:14px;padding:15px;text-decoration:none;font-weight:700}.source-list small{display:block;color:var(--muted);font-weight:400;margin-top:4px}
+    footer{margin-top:80px;border-top:1px solid #34485f;background:#0a1525;padding:38px 0;color:var(--muted)}footer .wrap{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}footer b{color:white}
+    .reveal{animation:rise .34s ease}@keyframes rise{from{opacity:.3;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:850px){.hero{grid-template-columns:1fr;min-height:auto;padding-block:45px 10px}.space{grid-row:1;max-width:300px;min-height:250px;width:100%;justify-self:center;margin-bottom:-8px}.hero-text{grid-row:2}.stat-grid{grid-template-columns:repeat(2,1fr)}.track{grid-template-columns:repeat(4,1fr)}.lab,.cols{grid-template-columns:1fr}.future-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:570px){.wrap{width:min(calc(100% - 28px),var(--max))}.brand span{display:none}.nav{align-items:center}.nav nav{max-width:66%;gap:16px}.section{padding-top:60px}.space{max-width:235px;min-height:215px}.stat{padding:15px}.stat strong{font-size:1.6rem}.phase{font-size:.66rem;min-height:84px}.phase .num{font-size:1rem}.phase-display{grid-template-columns:1fr;gap:12px}.phase-symbol{height:58px;width:58px;font-size:1.7rem}.model-steps,.future-grid,.check-grid,.source-list{grid-template-columns:1fr}.range{grid-template-columns:57px 1fr;gap:8px}.range>span:last-child{grid-column:2;justify-self:end}.axis{padding-left:65px;padding-right:0}.chart-wrap{overflow-x:auto}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="index.html" aria-label="Return to Má Bit homepage"><b>Örbit</b><span>by KáraKÖG · Má Bit</span></a>
+      <nav aria-label="Page navigation">
+        <a href="#mission">Mission</a><a href="#pathway">Pathway</a><a href="#results">Results</a><a href="#laboratory">Lab</a><a href="#sources">Sources</a>
+      </nav>
+    </div>
+  </header>
+  <main id="main">
+    <div class="wrap">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-text">
+          <div class="eyebrow"><span class="node-dot" aria-hidden="true"></span> KáraKÖG Research / Simulation 001</div>
+          <h1 id="hero-title"><span>Örbit.</span></h1>
+          <p class="intro">A civilisation is more than a flag planted on another planet. How do we create a community that can survive, learn, repair itself and eventually thrive beyond Earth?</p>
+          <div class="hero-btns"><a class="btn" href="#pathway">Explore the pathway <span aria-hidden="true">↗</span></a><a class="btn secondary" href="#laboratory">Open the simulation lab</a></div>
+          <p class="hero-note">An educational thought experiment rooted in a previously discussed stochastic scenario — not a mission announcement or a prediction.</p>
+        </div>
+        <div class="space" role="img" aria-label="Stylised planet Mars surrounded by orbital paths and stars">
+          <div class="orbital" aria-hidden="true"></div><div class="orbital o2" aria-hidden="true"></div><div class="mars" aria-hidden="true"></div>
+          <div class="planet-label one">Mars / Destination</div><div class="planet-label two">Earth → Moon → Mars</div>
+        </div>
+      </section>
+
+      <section class="section" id="mission">
+        <div class="eyebrow">01 / The question</div>
+        <h2>What counts as a civilisation?</h2>
+        <p class="lede">Örbit shifts the question from <em>“When do humans arrive on Mars?”</em> to <em>“When can a settlement persist without a continuous lifeline from Earth?”</em></p>
+        <div class="stat-grid" aria-label="Recorded scenario headline figures">
+          <div class="stat"><strong>200,000</strong><p>Stochastic histories explored in our earlier model</p></div>
+          <div class="stat"><strong>~150</strong><p>People per modelled community node</p></div>
+          <div class="stat"><strong>450+</strong><p>Three-node organisational threshold in our scenario</p></div>
+          <div class="stat"><strong>~2307</strong><p>Recorded median year for both Moon and Mars meeting modelled criteria</p></div>
+        </div>
+        <div class="callout coral"><strong>How to read these numbers:</strong> They are outputs and assumptions of a speculative model from our earlier work. The original simulation code and complete probability distributions are not embedded here, so the figures have not been independently reproduced. A population of 450 is <em>not</em> an established biological minimum for a real Mars colony.</div>
+        <div class="cols">
+          <article class="card"><div class="mini-tag">Population & society</div><h3>Connections before expansion</h3><p>We use groups of roughly 150 as an organisational design choice, inspired by Dunbar's number — not a hard cognitive law. Three interconnected nodes give the model a starting point for sharing knowledge, responsibility and redundancy.</p></article>
+          <article class="card"><div class="mini-tag">Systems & survival</div><h3>Independence is multidimensional</h3><p>People need dependable energy, water, food, medicine, spare parts, education and governance. Örbit treats these as linked systems. A city of thousands could still be fragile if one irreplaceable component must be imported.</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="pathway">
+        <div class="eyebrow">02 / The technology tree</div>
+        <h2>From first landing to a generation leap.</h2>
+        <p class="lede">Our progression borrows the <em>feel</em> of an exploratory technology tree: each achievement makes the next possible. Tap a node for an instant snap, or press and hold to grow the connection before opening it.</p>
+        <div class="track" id="phase-track" aria-label="Eight stages in the civilisation pathway">
+          <button class="phase active" type="button" data-phase="0" aria-pressed="true"><span class="fill"></span><span class="num">01</span><span>Explore</span></button>
+          <button class="phase" type="button" data-phase="1" aria-pressed="false"><span class="fill"></span><span class="num">02</span><span>Settle</span></button>
+          <button class="phase" type="button" data-phase="2" aria-pressed="false"><span class="fill"></span><span class="num">03</span><span>Survive</span></button>
+          <button class="phase" type="button" data-phase="3" aria-pressed="false"><span class="fill"></span><span class="num">04</span><span>Reproduce</span></button>
+          <button class="phase" type="button" data-phase="4" aria-pressed="false"><span class="fill"></span><span class="num">05</span><span>Learn</span></button>
+          <button class="phase" type="button" data-phase="5" aria-pressed="false"><span class="fill"></span><span class="num">06</span><span>Reinforce</span></button>
+          <button class="phase" type="button" data-phase="6" aria-pressed="false"><span class="fill"></span><span class="num">07</span><span>Generation leap</span></button>
+          <button class="phase" type="button" data-phase="7" aria-pressed="false"><span class="fill"></span><span class="num">08</span><span>Expand</span></button>
+        </div>
+        <svg class="neural-link" viewBox="0 0 800 66" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+          <path class="branch" d="M18 36 C85 36 112 12 179 21 S315 58 402 34 S547 15 626 33 S744 41 783 19"/>
+          <path id="neural-charge" class="charge" pathLength="100" d="M18 36 C85 36 112 12 179 21 S315 58 402 34 S547 15 626 33 S744 41 783 19"/>
+          <circle class="neuron" cx="18" cy="36" r="8"/><circle class="end" cx="783" cy="19" r="9"/>
+        </svg>
+        <article class="card phase-display" id="phase-panel" aria-live="polite">
+          <div class="phase-symbol" id="phase-symbol" aria-hidden="true">✧</div>
+          <div><small id="phase-kicker">Stage 01 / Reconnaissance</small><h3 id="phase-title">Explore the environment</h3><p id="phase-description">Robotic scouts, orbital mapping and experiments identify hazards, resources and workable settlement sites. Exploration generates the knowledge needed to make the first commitments.</p><p class="tiny" id="phase-condition"><strong>Unlock requirement:</strong> environmental knowledge and a credible resource plan.</p></div>
+        </article>
+      </section>
+
+      <section class="section" id="results">
+        <div class="eyebrow">03 / Recorded near-term scenario</div>
+        <h2>What did our earlier simulation suggest?</h2>
+        <p class="lede">The previous toy model explored 200,000 possible histories with uncertain settlement windows, generational continuity requirements and demographic setbacks. It prioritised resilient social systems over the earliest possible arrival date.</p>
+        <div class="card">
+          <h3>Example timeline: 2040–2375</h3>
+          <div class="time-map" role="img" aria-label="Lunar settlement window 2040 to 2090, Mars settlement window 2070 to 2180, and illustrative stable civilisation outcome span 2260 to 2375, with a recorded median around 2307">
+            <div class="range"><span>Moon</span><div class="barline"><div class="bar" style="left:0%;width:14.9%"></div></div><span>2040–2090</span></div>
+            <div class="range mars-row"><span>Mars</span><div class="barline"><div class="bar" style="left:9%;width:32.8%"></div></div><span>2070–2180</span></div>
+            <div class="range stable-row"><span>Stability</span><div class="barline"><div class="bar" style="left:65.7%;width:34.3%"></div></div><span>~2260–2375</span></div>
+          </div>
+          <div class="axis" aria-hidden="true"><span>2040</span><span>2120</span><span>2200</span><span>2280</span><span>2375</span></div>
+          <div class="readout" style="margin-top:24px"><div><strong>~2307</strong><span>Recorded median stability year</span></div><div><strong>2280–2340</strong><span>Recorded approximate middle-half interval (25th–75th percentile)</span></div></div>
+          <p class="tiny" style="margin-top:16px">The outer span is a previously reported indicative range, not a verified confidence interval. These are conditional outputs, not dates committed to by any space agency.</p>
+        </div>
+        <div class="model-steps" style="margin-top:16px">
+          <article class="model-step"><h3>Arrival is not independence</h3><p>Settlement windows are broad assumptions, not launch schedules: Moon 2040–2090; Mars 2070–2180.</p></article>
+          <article class="model-step"><h3>Generations matter</h3><p>A generation lasts 27 model years. The scenario asks for three locally sustained generations after stability conditions are achieved.</p></article>
+          <article class="model-step"><h3>Continuity must survive shocks</h3><p>Our earlier demographic assumption included a 5% setback per generation. Real-world health, fertility, supply and accident risks require far richer modelling.</p></article>
+        </div>
+        <div class="callout"><strong>The civilisation test:</strong> Could Earth stop sending supplies without the Moon and Mars settlements collapsing? Could they preserve knowledge, repair vital systems, support new generations, and found another settlement? Those are Örbit's design goals — not claims that present technology meets them.</div>
+      </section>
+
+      <section class="section" id="laboratory">
+        <div class="eyebrow">04 / Interactive scenario lab</div>
+        <h2>Change the assumptions. Change the outcome.</h2>
+        <p class="lede">This lightweight experiment is <strong>separate from the recorded 200,000-run simulation</strong>. It uses a transparent generation-by-generation calculation so you can see why different social assumptions change a settlement's trajectory.</p>
+        <div class="lab">
+          <div class="card controls" id="lab-controls">
+            <div><div class="control-header"><label for="arrival">Settlement begins</label><output id="arrival-value" for="arrival">2125</output></div><input id="arrival" type="range" min="2070" max="2180" step="5" value="2125"><small>Illustrative Mars founding year</small></div>
+            <div><div class="control-header"><label for="growth">Population growth per generation</label><output id="growth-value" for="growth">50%</output></div><input id="growth" type="range" min="10" max="100" step="5" value="50"><small>Gross increase before the demographic setback</small></div>
+            <div><div class="control-header"><label for="drag">Demographic setback per generation</label><output id="drag-value" for="drag">5%</output></div><input id="drag" type="range" min="0" max="25" step="1" value="5"><small>Population reduction applied to every generation</small></div>
+            <div><div class="control-header"><label for="target">Organisational population threshold</label><output id="target-value" for="target">450</output></div><input id="target" type="range" min="300" max="1500" step="150" value="450"><small>This is a scenario parameter, not a medically validated minimum</small></div>
+            <button type="button" class="btn secondary" id="reset-lab">Restore example settings ↺</button>
+          </div>
+          <div class="card">
+            <div class="mini-tag">Live calculation / illustrative</div>
+            <h3>Generational growth model</h3>
+            <div class="readout"><div><strong id="stable-year">—</strong><span>First year completing the stability-duration test</span></div><div><strong id="stable-pop">—</strong><span>Population at that generation</span></div></div>
+            <p id="lab-summary" class="tiny" aria-live="polite" style="margin-top:15px">Calculating…</p>
+            <div class="chart-wrap"><div class="bar-chart" id="pop-chart" role="img" aria-label="Illustrative population by generation"></div></div>
+            <p class="tiny">Formula per 27-year generation: next population = current population × (1 + growth rate) × (1 − setback rate). Start with 150 people; require the threshold for three consecutive measured generations. This model omits supply shortages, age structure, births, deaths, resource limits, migration and random events.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="systems">
+        <div class="eyebrow">05 / Settlement resilience checklist</div>
+        <h2>Can the habitat stand on its own?</h2>
+        <p class="lede">Tick each subsystem to imagine it operating locally with redundancy and repair capability. This is a teaching checklist, <em>not</em> a certification or engineering safety assessment.</p>
+        <div class="cols">
+          <div class="card"><div class="check-grid" id="systems-checks">
+            <label class="check"><input type="checkbox" value="power"><span><strong>Power</strong><small>Generation, storage and failover</small></span></label>
+            <label class="check"><input type="checkbox" value="water"><span><strong>Water</strong><small>Recovery, treatment and reserve</small></span></label>
+            <label class="check"><input type="checkbox" value="food"><span><strong>Food</strong><small>Cultivation, nutrition and contingency</small></span></label>
+            <label class="check"><input type="checkbox" value="air"><span><strong>Air & shelter</strong><small>Atmosphere, pressure and thermal safety</small></span></label>
+            <label class="check"><input type="checkbox" value="health"><span><strong>Health</strong><small>Medicine and long-term wellbeing</small></span></label>
+            <label class="check"><input type="checkbox" value="industry"><span><strong>Repair & industry</strong><small>Tools, parts and local manufacturing</small></span></label>
+            <label class="check"><input type="checkbox" value="learning"><span><strong>Education</strong><small>Skills and knowledge transfer</small></span></label>
+            <label class="check"><input type="checkbox" value="governance"><span><strong>Governance</strong><small>Accountability and peaceful succession</small></span></label>
+          </div></div>
+          <div class="card"><div class="mini-tag">Systems / Conceptual readiness</div><p class="readiness" id="ready-number" aria-live="polite">0 / 8 systems</p><div class="bar-meter" aria-hidden="true"><div id="ready-bar"></div></div><h3 id="ready-heading">Dependent on outside support</h3><p id="ready-text">Begin by selecting the systems you believe your habitat could sustain. Even with all eight ticked, real independence would require measured performance, spare capacity and validated failure testing.</p><p class="tiny">Try intentionally unchecking one system. What happens to the rest when a dependency fails? This is why KáraKÖG's habitat thinking emphasises networks and repair, not isolated gadgets.</p></div>
+        </div>
+      </section>
+
+      <section class="section" id="horizon">
+        <div class="eyebrow">06 / The distant horizon</div>
+        <h2>Beyond Mars: the long view.</h2>
+        <p class="lede">Our later infographic explored a completely different scale: thousands to hundreds of thousands of years. These stages form a <strong>speculative civilisation design narrative</strong>, not results of the shorter Monte Carlo model.</p>
+        <div class="future-grid">
+          <article class="future-card"><b>0–2,000 YEARS</b><h3>Earth foundations</h3><p>Climate resilience, resource cycles, governance and systems engineering.</p></article>
+          <article class="future-card"><b>2,000–5,000 YEARS</b><h3>Lunar and orbital society</h3><p>Permanent habitats, research communities and local industry.</p></article>
+          <article class="future-card"><b>5,000–15,000 YEARS</b><h3>Martian communities</h3><p>Multiple settlements and increasingly complex local support networks.</p></article>
+          <article class="future-card"><b>15,000–50,000 YEARS</b><h3>Outer solar system</h3><p>Conceptual expansion to asteroids and outer-system habitats.</p></article>
+          <article class="future-card"><b>50,000–200,000 YEARS</b><h3>Networked worlds</h3><p>Interdependent yet resilient communities across the Solar System.</p></article>
+          <article class="future-card"><b>200,000+ YEARS</b><h3>Interstellar possibilities</h3><p>Long-duration ships and settlements beyond our home star — highly speculative.</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="sources">
+        <div class="eyebrow">07 / Method, limits & reading</div>
+        <h2>Which ideas are established, and which are ours?</h2>
+        <details open><summary>What is observed or supported by current engineering work?</summary><p>Life-support recycling, habitat design, transport architecture and local resource utilisation are active research and engineering topics. NASA's Moon to Mars framework describes a phased approach to exploring these technologies; it does not endorse Örbit's population thresholds, dates or probability outputs.</p></details>
+        <details><summary>Is Dunbar's number really a limit of 150 people?</summary><p>No established universal limit has been demonstrated. The idea inspired our modular community organisation, but the value 150 is best treated here as a design assumption. A 2021 analysis challenged the statistical basis for a fixed value.</p></details>
+        <details><summary>What would make Örbit a reproducible scientific model?</summary><p>Publish source code, a versioned parameters table, random-number seed handling, exact transition rules, definitions of success and failure, output data, uncertainty intervals and validation tests. Then rerun it, test sensitivity and compare against documented evidence. This page deliberately avoids suggesting those steps have already been completed.</p></details>
+        <details><summary>Is an independent settlement necessarily a self-sustaining civilisation?</summary><p>Not necessarily. Independence is gradual and multidimensional. A population could meet a numerical threshold yet still depend on Earth for critical medicine, electronics or replacement parts. Our checklist and long-term test show why population alone is insufficient.</p></details>
+        <p class="tiny" style="margin-top:26px">Selected external reading (links require an internet connection; the page itself does not):</p>
+        <div class="source-list">
+          <a href="https://www.nasa.gov/moontomarsarchitecture/" target="_blank" rel="noopener noreferrer">NASA — Moon to Mars Architecture <small>Space exploration systems, objectives and planning</small></a>
+          <a href="https://www.nasa.gov/moon-to-mars-architecture-mars-architecture-trade-space/" target="_blank" rel="noopener noreferrer">NASA — Mars Mission Design <small>Transportation, landing, habitation and other challenges</small></a>
+          <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC8103230/" target="_blank" rel="noopener noreferrer">Research — “Dunbar's number” deconstructed <small>2021 Royal Society paper on the limits of the 150-person claim</small></a>
+          <a href="https://www.nasa.gov/moontomarsarchitecture-strategyandobjectives/" target="_blank" rel="noopener noreferrer">NASA — Strategy & Objectives <small>Why Moon-to-Mars engineering is approached as a system of systems</small></a>
+        </div>
+        <div class="callout" style="margin-top:30px"><strong>Örbit's guiding principle:</strong> We are not measuring how quickly we can leave Earth. We are asking how responsibly a society can learn to live somewhere new — while preserving the ability to cooperate, adapt and care for its members.</div>
+      </section>
+    </div>
+  </main>
+  <footer><div class="wrap"><div><b>Örbit</b> · A KáraKÖG exploration on Má Bit <span style="color:#8da7bc">/ Version 0.1</span></div><a href="index.html">↖ Return to Má Bit</a></div></footer>
+  <script>
+    'use strict';
+    const phases = [
+      {name:'Explore the environment',tag:'Stage 01 / Reconnaissance',glyph:'✧',text:'Robotic scouts, orbital mapping and experiments identify hazards, resources and workable settlement sites. Exploration generates the knowledge needed to make the first commitments.',gate:'Environmental knowledge and a credible resource plan.'},
+      {name:'Establish a settlement',tag:'Stage 02 / Habitation',glyph:'⌂',text:'Habitats, power, communications and supply routes form the first durable foothold. Inhabitants still depend heavily on off-world logistics and external expertise.',gate:'Reliable shelter and transport, with demonstrable backup systems.'},
+      {name:'Survive repeated failures',tag:'Stage 03 / Reliability',glyph:'◈',text:'The community learns to withstand equipment failures, dust, radiation exposure, food shortages and medical emergencies without a single failure causing catastrophe.',gate:'Tested life-support loops, reserves and emergency plans.'},
+      {name:'Support new generations',tag:'Stage 04 / Demography',glyph:'◎',text:'Long-term health, caregiving, family choice and the welfare of future generations become central. Space settlement health and reproductive questions remain unresolved scientific challenges.',gate:'Validated health, welfare and continuity conditions — not assumed biological feasibility.'},
+      {name:'Learn and transfer knowledge',tag:'Stage 05 / Education',glyph:'✳',text:'A settlement must teach new engineers, clinicians, growers, educators and civic leaders. Information needs to survive individuals, institutions and technical failures.',gate:'Local training pathways and durable, accessible knowledge stores.'},
+      {name:'Reinforce the network',tag:'Stage 06 / Redundancy',glyph:'◇',text:'Multiple communities cooperate and share expertise while retaining enough autonomy to withstand isolation. Capacity for repair and governance matters as much as population.',gate:'Interoperable communities with redundant essential skills and production.'},
+      {name:'Pass the generation test',tag:'Stage 07 / Continuity',glyph:'✦',text:'In our scenario, the settlement must preserve its essential systems for three local generations, modelled as 27 years each. This is a modelled endurance test, not a proven safety standard.',gate:'Three consecutive generations above the chosen thresholds and functioning systems.'},
+      {name:'Expand without collapse',tag:'Stage 08 / New foundations',glyph:'✺',text:'The ultimate test: can established settlements support a new independent community without endangering their own wellbeing? Expansion becomes a consequence of resilience, not its substitute.',gate:'Survive Earth-supply interruption and independently establish the next habitat.'}
+    ];
+    const phaseButtons=[...document.querySelectorAll('[data-phase]')];
+    let suppressClick=false,holdFrame=0,pressStart=0,holdingButton=null,holdActivated=false;
+    const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const connection=document.querySelector('#neural-charge');
+    function showPhase(i,fromHold=false){const item=phases[i];if(!item)return;
+      if(!fromHold){connection.style.transition='none';connection.style.strokeDashoffset='100';requestAnimationFrame(()=>{connection.style.transition='stroke-dashoffset 175ms ease-out';connection.style.strokeDashoffset='0';});}
+phaseButtons.forEach((b,n)=>{const active=n===i;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
+      const panel=document.querySelector('#phase-panel');panel.classList.remove('reveal');void panel.offsetWidth;panel.classList.add('reveal');
+      document.querySelector('#phase-kicker').textContent=item.tag;document.querySelector('#phase-symbol').textContent=item.glyph;
+      document.querySelector('#phase-title').textContent=item.name;document.querySelector('#phase-description').textContent=item.text;document.querySelector('#phase-condition').textContent='Unlock requirement: '+item.gate;
+    }
+    function clearHold(completed=false){cancelAnimationFrame(holdFrame);if(holdingButton){holdingButton.classList.remove('holding');holdingButton.style.setProperty('--charge','0%');holdingButton=null;}if(!completed){connection.style.strokeDashoffset='100';}}
+    phaseButtons.forEach(button=>{
+      button.addEventListener('click',()=>{if(suppressClick){suppressClick=false;return;}showPhase(Number(button.dataset.phase));});
+      button.addEventListener('pointerdown',event=>{if(event.pointerType==='mouse'&&event.button!==0)return;clearHold();holdActivated=false;holdingButton=button;pressStart=performance.now();if(reducedMotion)return;
+        button.classList.add('holding');connection.style.transition='none';connection.style.strokeDashoffset='100';const update=now=>{if(holdingButton!==button)return;const progress=Math.min(1,(now-pressStart)/950);button.style.setProperty('--charge',`${progress*100}%`);connection.style.strokeDashoffset=String(100-progress*100);if(progress>=1){holdActivated=true;suppressClick=true;showPhase(Number(button.dataset.phase),true);clearHold(true);}else{holdFrame=requestAnimationFrame(update);}};holdFrame=requestAnimationFrame(update);
+      });
+      button.addEventListener('pointerup',()=>{clearHold();});button.addEventListener('pointercancel',clearHold);button.addEventListener('lostpointercapture',clearHold);button.addEventListener('pointerleave',event=>{if(event.buttons)clearHold();});
+    });
+    // This model is illustrative, deliberately independent of the earlier 200,000-run model.
+    const ids=['arrival','growth','drag','target'];const el=id=>document.getElementById(id);
+    function updateLab(){const arrival=Number(el('arrival').value),growth=Number(el('growth').value)/100,drag=Number(el('drag').value)/100,target=Number(el('target').value),hold=3;
+      el('arrival-value').textContent=String(arrival);el('growth-value').textContent=`${Math.round(growth*100)}%`;el('drag-value').textContent=`${Math.round(drag*100)}%`;el('target-value').textContent=target.toLocaleString('en-GB');
+      let pop=150,consecutive=0,stableYear=null,stablePop=null;const history=[{year:arrival,pop}];
+      for(let gen=1;gen<=30;gen++){pop=Math.round(pop*(1+growth)*(1-drag));history.push({year:arrival+27*gen,pop});consecutive=pop>=target?consecutive+1:0;if(consecutive>=hold){stableYear=arrival+27*gen;stablePop=pop;break;}}
+      el('stable-year').textContent=stableYear===null?'Not reached':String(stableYear);el('stable-pop').textContent=stablePop===null?'—':Math.round(stablePop).toLocaleString('en-GB');
+      el('lab-summary').textContent=stableYear===null?'The threshold did not remain met for three consecutive generations within the 30-generation test window.':`From a starting cohort of 150, the scenario passes its three-generation numerical test ${stableYear-arrival} years after founding. This does not establish ecological or technical independence.`;
+      const chart=el('pop-chart');chart.replaceChildren();const shown=history.length>12?[...history.slice(0,5),...history.slice(-7)]:history;const max=Math.max(...shown.map(x=>x.pop),target,1);
+      shown.forEach((item,i)=>{const seg=document.createElement('div');seg.className='segment';const bar=document.createElement('div');bar.className='bar';bar.style.height=`${Math.max(3,(Math.log1p(item.pop)/Math.log1p(max))*100)}%`;bar.title=`${item.year}: ${item.pop.toLocaleString('en-GB')} people`;
+        const label=document.createElement('small');label.textContent=i===0||i===shown.length-1?String(item.year):'';seg.append(bar,label);chart.append(seg);});chart.setAttribute('aria-label',`Illustrative population samples from ${arrival} to ${history.at(-1).year}, logarithmic bar heights, starting 150 and ending ${history.at(-1).pop} people`);
+    }
+    ids.forEach(id=>el(id).addEventListener('input',updateLab));el('reset-lab').addEventListener('click',()=>{const defaults={arrival:2125,growth:50,drag:5,target:450};Object.entries(defaults).forEach(([id,value])=>el(id).value=value);updateLab();});
+    const checks=[...document.querySelectorAll('#systems-checks input')];
+    function updateReadiness(){const count=checks.filter(c=>c.checked).length;el('ready-number').textContent=`${count} / ${checks.length} systems`;el('ready-bar').style.width=`${count/checks.length*100}%`;
+      el('ready-heading').textContent=count===8?'All categories considered':count>=5?'Good coverage, important gaps remain':'Dependent on outside support';
+      el('ready-text').textContent=count===8?'You have checked all eight categories. This is a conceptual milestone only: real resilience depends on verified performance, maintenance, redundancy and long-term safety.':`You have selected ${count} of ${checks.length} system categories. Consider how unchecked systems can create cascading failures even when the others work.`;
+    }
+    checks.forEach(c=>c.addEventListener('change',updateReadiness));updateLab();updateReadiness();
+  </script>
+</body>
+</html>
