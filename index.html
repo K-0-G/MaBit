@@ -98,6 +98,13 @@
     .neuron--target { cursor: pointer; font: inherit; -webkit-tap-highlight-color: transparent; touch-action: none; user-select: none; }
     .neuron--target:hover, .neuron--target:focus-visible { border-color: #d0faff; box-shadow: 0 0 0 9px rgba(98, 174, 204, .09), 0 0 32px rgba(83, 210, 231, .4); }
     .neuron--target[aria-pressed="true"] { border-color: #d6faff; background: radial-gradient(circle at 50% 30%, #286a78, #123145 75%); box-shadow: 0 0 34px rgba(102, 234, 244, .5), 0 0 0 9px rgba(98, 174, 204, .08); }
+    /* Örbit is a native neuron, positioned above MaBit. */
+    .neuron--orbit {
+      --x: 20%; --y: 16%;
+      border-color: #d6a18f;
+      background: radial-gradient(circle at 45% 37%, #67454c, #182536 75%);
+      box-shadow: 0 0 0 8px rgba(221, 154, 131, .06), 0 0 26px rgba(218, 127, 100, .16);
+    }
     .neuron--kara { --x: 65%; --y: 16%; }
     .neuron--kog { --x: 83%; --y: 38%; }
     .neuron--machine { --x: 81%; --y: 68%; }
@@ -150,88 +157,6 @@
       .neuron--target.just-connected { animation: none; }
     }
     
-/* The existing neural network container */
-#neural-network {
-    position: relative;
-}
-
-/* Örbit sphere */
-.orbit-neuron {
-    position: absolute;
-
-    /* Position above MaBit */
-    left: 20%;
-    top: 18%;
-
-    /* Centre on those coordinates */
-    transform: translate(-50%, -50%);
-
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-
-    background: radial-gradient(
-        circle at 50% 40%,
-        #254d65,
-        #0c2032
-    );
-
-    border: 2px solid #69dff5;
-    box-shadow: 0 0 22px #43c7e533;
-
-    /* Centre the label */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-
-    text-align: center;
-    color: white;
-    text-decoration: none;
-
-    /* Interaction */
-    cursor: pointer;
-    z-index: 5;
-    transition: box-shadow 0.3s,
-                border-color 0.3s;
-}
-
-/* Main text */
-.orbit-neuron strong {
-    font-size: 24px;
-    font-weight: 800;
-}
-
-/* Subtitle */
-.orbit-neuron span {
-    font-size: 13px;
-    color: #b5dfff;
-}
-
-/* Hover or keyboard focus */
-.orbit-neuron:hover,
-.orbit-neuron:focus-visible {
-    border-color: #ffffff;
-    box-shadow: 0 0 35px #69dff599;
-    outline-offset: 4px;
-}
-
-/* Dashed neural connection */
-.orbit-connection {
-    position: absolute;
-
-    left: 20%;
-    top: 18%;
-    height: 34%;
-
-    border-left: 3px dashed #28465e;
-    transform: translateX(-50%);
-
-    z-index: 0;
-    pointer-events: none;
-}
-
   </style>
 </head>
 <body>
@@ -271,12 +196,15 @@
           </filter>
         </defs>
         <g class="dormant">
+          <!-- MaBit to Örbit, with the same SVG connection system as the other neurons. -->
+          <path d="M 200 286 Q 150 190 200 90" />
           <path d="M 200 286 Q 350 85 650 90" />
           <path d="M 200 286 Q 470 205 830 213" />
           <path d="M 200 286 Q 510 340 810 381" />
           <path d="M 200 286 Q 290 470 550 476" />
         </g>
         <g>
+          <path class="live" id="path-orbit" d="M 200 286 Q 150 190 200 90" />
           <path class="live" id="path-kara" d="M 200 286 Q 350 85 650 90" />
           <path class="live" id="path-kog" d="M 200 286 Q 470 205 830 213" />
           <path class="live" id="path-machine" d="M 200 286 Q 510 340 810 381" />
@@ -284,17 +212,16 @@
         </g>
         <circle id="signal" r="7" cx="200" cy="286" />
       </svg>
-      <div id="neural-network" class="existing-class">
-        <!-- Connection between Örbit and MaBit -->
-        <div class="orbit-connection" aria-hidden="true"></div>
-        <!-- Örbit: Mars Civilisation Simulation -->
-        <a href="orbit.html" class="orbit-nueron" aria-label="Explore Örbit, our Mars civilisation simulation">
-          <strong>Örbit</strong>
-          <span>Mars Simulation</span>
-        </a>
       <div class="neuron neuron--home" aria-label="MaBit, starting point">
         <span class="neuron__title">MaBit</span>
         <span class="neuron__sub">Start here</span>
+      </div>
+      <!-- A real sixth neuron: click to snap, or hold to grow its connection. -->
+      <button type="button" class="neuron neuron--target neuron--orbit" data-node="orbit"
+              aria-pressed="false" aria-label="Connect to Örbit, the Mars civilisation simulation">
+        <span class="neuron__title">Örbit</span>
+        <span class="neuron__sub">Mars Simulation</span>
+      </button>
       <button type="button" class="neuron neuron--target neuron--kara" data-node="kara" aria-pressed="false" aria-label="Connect to Kára, community interest">
         <span class="neuron__title">Kára</span><span class="neuron__sub">Community</span>
       </button>
@@ -307,7 +234,6 @@
       <button type="button" class="neuron neuron--target neuron--hab" data-node="hab" aria-pressed="false" aria-label="Connect to HAB-001, habitat project">
         <span class="neuron__title">HAB-001</span><span class="neuron__sub">Habitats</span>
       </button>
-      </div>
     </section>
 
     <section class="readout" aria-label="Selected connection">
@@ -326,6 +252,7 @@
       <h2 id="notes-title">Explore the projects</h2>
       <p>The neural interface is another way into ordinary web content. Each destination still has a normal anchor link, so the site remains simple to navigate.</p>
       <div class="notes-grid">
+        <article class="note" id="orbit"><h3><a href="orbit.html">Örbit — Mars Simulation ↗</a></h3><p>Walk through the long-term Mars civilisation scenario, explore its assumptions, and test how resilient communities might develop beyond Earth.</p></article>
         <article class="note" id="kara"><h3>Kára — Community</h3><p>Sharing skills, knowledge and resources; finding ways for community cooperation to make practical improvements.</p></article>
         <article class="note" id="kog"><h3>KÖG — Services</h3><p>The business and client-services side of KáraKÖG, including remote IT support and technology services.</p></article>
         <article class="note" id="machine"><h3>KÖG Machine — Hardware</h3><p>Exploring personal servers, local digital infrastructure and tools that give people more control over their computing.</p></article>
@@ -338,6 +265,7 @@
   <script>
     // STEP 4: Project data. Add new destinations here as your website grows.
     const destinations = {
+      orbit: { title: 'Örbit — Mars Simulation', description: 'Explore the Mars civilisation scenario, from early habitats and sustainable resources to thriving communities beyond Earth.', href: 'orbit.html' },
       kara: { title: 'Kára — Community', description: 'The community-facing side of KáraKÖG: cooperation, shared resources, learning and meaningful local connections.', href: '#kara' },
       kog: { title: 'KÖG — Services', description: 'The client and business side: practical IT support, services and sustainable development work.', href: '#kog' },
       machine: { title: 'KÖG Machine — Hardware', description: 'Personal servers, local computing and tools that give people more control of their digital spaces.', href: '#machine' },
@@ -409,6 +337,7 @@
       title.textContent = data.title;
       description.textContent = data.description;
       link.href = data.href;
+      link.textContent = key === 'orbit' ? 'Explore Örbit ↗' : 'Read project notes ↗';
       link.hidden = false;
       buttons.forEach(button => {
         const selected = button.dataset.node === key;
