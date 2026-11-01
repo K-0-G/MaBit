@@ -20,6 +20,12 @@
 @media(max-width:950px) and (min-width:621px){.registry-note{width:180px;left:29%;top:80%}.service{width:100px;font-size:11px}.core{left:42%}.service:nth-of-type(5){--x:58%;--y:64%}}
 @media(max-width:620px){.universe{min-height:1120px}.core{top:14%}.kara{left:24%;top:29%}.kog{left:73%;top:42%}.registry{left:21%;top:48%}.registry-note{left:20%;top:72%;width:100px;font-size:11px;--size:30px}.services{inset:0;width:auto}.services h2{right:16px;bottom:51px;font-size:9px}.services>.small{right:16px;bottom:32px;font-size:9px}.service{width:83px;font-size:10px;--size:30px;gap:7px;padding:4px}.service-name{max-width:79px}.service:nth-of-type(1){--x:52%;--y:57%}.service:nth-of-type(2){--x:83%;--y:57%}.service:nth-of-type(3){--x:83%;--y:71%}.service:nth-of-type(4){--x:83%;--y:85%}.service:nth-of-type(5){--x:52%;--y:85%}.service:nth-of-type(6){--x:52%;--y:71%}.legend{bottom:13px}.orbital-plane{inset:4% -35% 7%}}
 
+/* Project destinations: relative links work locally and in GitHub Pages. */
+.village{left:10%;top:43%;--size:50px;--shine:#e5ffe0;--color:#62966c;--halo:#a8edc220}
+.orbit-page{left:38%;top:15%;--size:57px;--shine:#ffe6df;--color:#ae6e69;--halo:#f4b0a520}
+.village .symbol,.orbit-page .symbol{font-size:22px}.village .node-label,.orbit-page .node-label{font-size:14px}
+.connections .village-link{stroke:#a8edc280}.connections .orbit-link{stroke:#f4b0a580}
+@media(max-width:620px){.village{left:24%;top:39%;--size:43px}.registry{top:51%}.orbit-page{left:76%;top:23%;--size:48px}.village .node-caption,.orbit-page .node-caption{letter-spacing:.8px}}
 </style>
 </head>
 <body>
@@ -27,7 +33,7 @@
 <header class="masthead shell"><a href="./index.html" class="wordmark">Má Bit <span>KÁRA / KÖG</span></a><span class="coordinates">A PLACE IN THE NETWORK &nbsp; · &nbsp; 01</span></header>
 <main class="shell">
 <section class="heading" aria-labelledby="network-heading"><div><p class="eyebrow">The KáraKÖG constellation</p><h1 id="network-heading">Everything begins<br>with a connection.</h1></div><p class="lede">Explore the community, the services and the infrastructure that connects them. Start with Registry, a small moon in Kára’s orbit.</p></section>
-<section class="universe" id="universe" aria-label="Orbital network: Má Bit connects to Kára and KÖG. Registry connects to Kára.">
+<section class="universe" id="universe" aria-label="Orbital network: Má Bit connects to Kára and KÖG. Registry and Kára Village connect to Kára. Örbit connects to Má Bit.">
 <div class="stage-label">MÁ BIT / ORBITAL MAP<br><span style="opacity:.6">COMMUNITY · IDENTITY · INFRASTRUCTURE</span></div>
 <div class="orbital-plane" aria-hidden="true"><div class="orbit"></div><div class="orbit two"></div><div class="orbit three"></div></div>
 <svg class="connections" id="connections" aria-hidden="true"></svg>
@@ -35,6 +41,8 @@
 <button type="button" class="node kara" id="kara" aria-label="Kára: describe the community"><span class="sphere"><span class="symbol">K</span></span><span class="node-label">Kára</span><span class="node-caption">Community</span></button>
 <button type="button" class="node kog" id="kog" aria-label="KÖG: describe the services"><span class="sphere"><span class="symbol">Ö</span></span><span class="node-label">KÖG</span><span class="node-caption">Services</span></button>
 <a class="node registry" id="registry" href="./registration.html" aria-describedby="registry-instructions" aria-controls="inspector services"><span class="sphere"><span class="symbol">R</span><span class="hold-ring" aria-hidden="true"></span></span><span class="node-label">Registry</span><span class="node-caption">Kára’s identity moon</span></a>
+<a class="node village" id="village" href="./kog-village.html" aria-label="Open Kára Village"><span class="sphere"><span class="symbol" aria-hidden="true">V</span></span><span class="node-label">Kára Village</span><span class="node-caption">Community project ↗</span></a>
+<a class="node orbit-page" id="orbit-page" href="./orbit.html" aria-label="Open Örbit"><span class="sphere"><span class="symbol" aria-hidden="true">Ö</span></span><span class="node-label">Örbit</span><span class="node-caption">Space exploration ↗</span></a>
 <aside class="registry-note" id="registry-note" aria-label="Registry description moon" hidden><span class="sphere" aria-hidden="true"><span class="symbol">i</span></span><strong>About Registry</strong><p>Choose your name and review your data choices. A registration demo; no account is created.</p></aside>
 <section class="services" id="services" aria-label="Potential KÖG infrastructure services" hidden><h2>Behind the Registry</h2>
 <button class="service" type="button" data-service="identity" aria-pressed="false"><span class="sphere" aria-hidden="true"><span class="symbol">01</span></span><span class="service-name">Identity &amp; Access</span></button>
@@ -47,7 +55,7 @@
 <div class="legend" aria-hidden="true"><span>COMMUNITY</span><span>SERVICES</span><span>REGISTRY</span></div><div class="depth-note">An orbital model · connections show relationships</div>
 </section>
 <div class="console" id="network-controls"><section aria-label="Registry interaction controls"><p class="eyebrow">One neuron. Three ways to explore.</p><div class="instructions" id="registry-instructions"><div><b>Tap / quick click</b><span>Open Registry.</span></div><div><b>Hold ½ second</b><span>Read its description.</span></div><div><b>Keep holding 1½ seconds</b><span>Reveal KÖG connections.</span></div></div><div class="controls"><button class="control" type="button" id="describe">Describe Registry</button><button class="control" type="button" id="reveal" aria-expanded="false" aria-controls="services">Reveal service connections</button><a class="control emphasis" href="./registration.html">Open Registry ↗</a></div><p class="small">Keyboard: Enter opens Registry; hold Space to explore. Escape cancels a hold or hides the connections.</p></section>
-<section class="inspector" id="inspector" aria-label="Selected neuron description"><div aria-live="polite" aria-atomic="true"><p class="eyebrow" id="info-kind">Network guide</p><h2 id="info-title">A community with infrastructure.</h2><p id="info-description">Má Bit is the centre. Kára and KÖG are its two main orbits. Registry belongs to Kára; hold it to discover the potential KÖG services supporting registration.</p></div><p class="status" id="status" role="status"></p></section></div>
+<section class="inspector" id="inspector" aria-label="Selected neuron description"><div aria-live="polite" aria-atomic="true"><p class="eyebrow" id="info-kind">Network guide</p><h2 id="info-title">A community with infrastructure.</h2><p id="info-description">Má Bit is the centre. Explore Kára Village through Kára, or follow Örbit into space. Hold Registry to discover the potential KÖG services supporting registration.</p></div><p class="status" id="status" role="status"></p></section></div>
 <noscript><p class="nojs">JavaScript is off. <a href="./registration.html">Open the Registry demonstration</a>. The hold gestures and service connections require JavaScript.</p></noscript>
 <details class="story"><summary>From Ciarán · The first step on the journey</summary>
         <h2>The First Step; on the Journey of a Thousand...</h2>
@@ -95,7 +103,7 @@ function drawConnections(){
  const centre=element=>{const r=element.getBoundingClientRect();return {x:r.left-box.left+r.width/2,y:r.top-box.top+r.height/2};};
  const sphere=id=>centre($(id).querySelector('.sphere'));
  function connect(a,b,cls,bend=0){const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',`M ${a.x} ${a.y} Q ${(a.x+b.x)/2+bend} ${(a.y+b.y)/2-bend} ${b.x} ${b.y}`);p.setAttribute('class',cls);svg.append(p);}
- connect(sphere('mabit'),sphere('kara'),'core-link',-30);connect(sphere('mabit'),sphere('kog'),'core-link',25);connect(sphere('kara'),sphere('registry'),'registry-link',-40);
+ connect(sphere('mabit'),sphere('kara'),'core-link',-30);connect(sphere('mabit'),sphere('kog'),'core-link',25);connect(sphere('kara'),sphere('registry'),'registry-link',-40);connect(sphere('kara'),sphere('village'),'village-link',-20);connect(sphere('mabit'),sphere('orbit-page'),'orbit-link',25);
  if(!$('registry-note').hidden)connect(sphere('registry'),sphere('registry-note'),'registry-link',-30);
  if(!services.hidden){connect(sphere('registry'),sphere('kog'),'bridge',55);services.querySelectorAll('.sphere').forEach(dot=>connect(sphere('kog'),centre(dot),'service-link',-20));}
 }
